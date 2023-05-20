@@ -1,0 +1,21 @@
+{
+  "users": [
+    {
+      "id": "Anjal28",
+      "name": "Anjal Gupta",
+      "password": "Anjal@123",
+      "email": "Anjal.gupta28@gmail.com",
+      "phone": "8770495994",
+      "address": "Bangalore"
+    }
+  ],
+  "contact": [
+    {
+      "name": "Anjal",
+      "subject": "Chair",
+      "email": "Anjal.gupta28@gmail",
+      "message": "Hi",
+      "id": 1
+    }
+  ]
+}
