@@ -10,7 +10,7 @@ const Header = () => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate('/');
+    navigate('/home');
   };
 
   return (
@@ -24,7 +24,7 @@ const Header = () => {
             <ul className={navList ? "small" : "flex"}>
               {nav.map((list, index) => (
                 <li key={index}>
-                  <Link to={list.path}>{list.text}</Link>
+                  <Link to={list.path} className="hover-underline-animation">{list.text}</Link>
                 </li>
               ))}
             </ul>
