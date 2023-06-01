@@ -38,10 +38,22 @@
 
 // export default Appliances;
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { appliances } from "../data/Data"
 
 const Appliances = () => {
+    const [data, setData] = useState(null);
+
+    useEffect(() => {
+        fetch("http://localhost:8000/addItems")
+            .then((res) => {
+                return res.json();
+            }).then((resp) => {
+                setData(resp);
+            }).catch((err) => {
+                console.log(err.message);
+            })
+    }, [])
     return (
         <div style={{ backgroundColor: "#191919" }}>
             <div style={{ color: "white", minHeight: "1000px", padding: "2rem" }}>
