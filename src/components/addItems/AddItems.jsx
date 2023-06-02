@@ -1,13 +1,13 @@
-import React, { useRef, useState } from "react"
-import Dialog from '@mui/material/Dialog';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import img from "../images/services.jpg"
 import { toast } from "react-toastify";
+import { Dialog, DialogContent, DialogTitle } from "@mui/material";
 import Back from "../common/Back";
-import "./Additem.css";
-import TableList from "./TableList";
+import img from "../images/services.jpg"
+import CheckIcon from '@mui/icons-material/Check';
+import CloseIcon from '@mui/icons-material/Close';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 
 const AddItems = () => {
   const [open, setOpen] = useState(false);
@@ -16,8 +16,79 @@ const AddItems = () => {
   const [productDescription, setProductDescription] = useState("");
   const [productBrand, setProductBrand] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
+  const [data, setData] = useState(null);
+  const [editItemId, setEditItemId] = useState(null);
+  const [editItemData, setEditItemData] = useState({});
   const formRef = useRef(null);
   const usenavigate = useNavigate();
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = () => {
+    fetch("http://localhost:8000/addItems")
+      .then((res) => res.json())
+      .then((resp) => {
+        setData(resp);
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+  };
+
+  const removeItem = (id) => {
+    if (window.confirm('Do you want to remove?')) {
+      fetch(`http://localhost:8000/addItems/${id}`, {
+        method: "DELETE",
+      })
+        .then((res) => {
+          alert('Removed successfully.');
+          fetchData();
+        })
+        .catch((err) => {
+          console.log(err.message);
+        });
+    }
+  };
+
+  const handleEditItem = (item) => {
+    setEditItemId(item.id);
+    setEditItemData(item);
+  };
+
+  const handleCancelEdit = () => {
+    setEditItemId(null);
+    setEditItemData({});
+  };
+
+  const handleUpdateItem = (e) => {
+    e.preventDefault();
+    fetch(`http://localhost:8000/addItems/${editItemId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(editItemData),
+    })
+      .then((res) => {
+        alert('Item updated successfully.');
+        fetchData();
+        setEditItemId(null);
+        setEditItemData({});
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setEditItemData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -62,48 +133,180 @@ const AddItems = () => {
     };
   };
 
-
-
   return (
     <>
       <section className='blog-out mb'>
         <Back name='Add Product' title='Add-Product - To add new product in our list ' cover={img} />
         <div className='container recent' style={{ display: "flex", justifyContent: "flex-end" }}>
-          <button style={{ marginTop: "2rem" }} onClick={handleClickOpen}>Add Product</button>
-        </div>
-
-        <div style={{marginTop:"20px"}}>
-          <TableList />
-        </div>
-
-        <div>
-          <Dialog
-            open={open}
-            onClose={handleClose}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
-          >
-            <DialogTitle id="alert-dialog-title">
-              {"Fill up the form"}
-            </DialogTitle>
-
-            <DialogContent>
-              <form onSubmit={handleSubmit} ref={formRef} id="myForm" className="shadow" style={{ marginTop: "0px" }}>
-                <div>
-                  <input type="text" value={productName} onChange={(e) => setProductName(e.target.value)} className="form-control" placeholder="Product Name" required />
-                  <input type="number" value={prdouctPrice} onChange={(e) => setProductPrice(e.target.value)} className="form-control" placeholder="Price" required />
-                  <input type="text" value={productDescription} onChange={(e) => setProductDescription(e.target.value)} className="form-control" placeholder="Description" required />
-                  <input type="text" value={productBrand} onChange={(e) => setProductBrand(e.target.value)} className="form-control" placeholder="Brand" required />
-                  <input type="file" multiple="multiple" placeholder="Photos" onChange={(e) => setSelectedFile(e.target.files[0])} />
-                  <button style={{ margin: "15px" }}>Submit Request</button>
-                </div>
-              </form>
-            </DialogContent>
-          </Dialog>
+          <button style={{ marginTop: "1rem" }} onClick={handleClickOpen}>Add Product</button>
         </div>
       </section>
-    </>
-  )
-}
 
-export default AddItems
+      <div className="container">
+        <div className="card" style={{ marginBottom: "50px" }}>
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <h2>Product Listing</h2>
+          </div>
+          <div className="card-body">
+            <table className="table table-bordered">
+              <thead className="bg-dark text-white">
+                <tr>
+                  <td>ID</td>
+                  <td>Name</td>
+                  <td>Price</td>
+                  <td>Description</td>
+                  <td>Brand</td>
+                  <td>Action</td>
+                </tr>
+              </thead>
+              <tbody>
+                {data &&
+                  data.map((item) => (
+                    <tr key={item.id}>
+                      <td>{item.id}</td>
+                      <td>
+                        {editItemId === item.id ? (
+                          <input
+                            type="text"
+                            name="productName"
+                            value={editItemData.productName || ""}
+                            onChange={handleChange}
+                            required
+                          />
+                        ) : (
+                          item.productName
+                        )}
+                      </td>
+                      <td>
+                        {editItemId === item.id ? (
+                          <input
+                            type="number"
+                            name="prdouctPrice"
+                            value={editItemData.prdouctPrice || ""}
+                            onChange={handleChange}
+                            required
+                          />
+                        ) : (
+                          item.prdouctPrice
+                        )}
+                      </td>
+                      <td>
+                        {editItemId === item.id ? (
+                          <input
+                            type="text"
+                            name="productDescription"
+                            value={editItemData.productDescription || ""}
+                            onChange={handleChange}
+                            required
+                          />
+                        ) : (
+                          item.productDescription
+                        )}
+                      </td>
+                      <td>
+                        {editItemId === item.id ? (
+                          <input
+                            type="text"
+                            name="productBrand"
+                            value={editItemData.productBrand || ""}
+                            onChange={handleChange}
+                            required
+                          />
+                        ) : (
+                          item.productBrand
+                        )}
+                      </td>
+                      <td>
+                        {editItemId === item.id ? (
+                          <>
+                            <CheckIcon onClick={handleUpdateItem} style={{ color: "blue", cursor: "pointer" }} />
+                            <CloseIcon onClick={handleCancelEdit} style={{ color: "red", cursor: "pointer" }} />
+                          </>
+                        ) : (
+                          <>
+                            <EditIcon
+                              onClick={() => handleEditItem(item)}
+                              style={{ color: "blue", cursor: "pointer" }}
+                            />
+                            <DeleteIcon
+                              onClick={() => removeItem(item.id)}
+                              style={{ color: "red", cursor: "pointer" }}
+                            />
+                          </>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <Dialog
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+            {"Fill up the form"}
+          </DialogTitle>
+
+          <DialogContent>
+            <form onSubmit={handleSubmit} ref={formRef} id="myForm" className="shadow" style={{ marginTop: "0px" }}>
+              <div>
+                <input type="text" value={productName} onChange={(e) => setProductName(e.target.value)} className="form-control" placeholder="Product Name" required />
+                <input type="number" value={prdouctPrice} onChange={(e) => setProductPrice(e.target.value)} className="form-control" placeholder="Price" required />
+                <input type="text" value={productDescription} onChange={(e) => setProductDescription(e.target.value)} className="form-control" placeholder="Description" required />
+                <input type="text" value={productBrand} onChange={(e) => setProductBrand(e.target.value)} className="form-control" placeholder="Brand" required />
+                <input type="file" multiple="multiple" placeholder="Photos" onChange={(e) => setSelectedFile(e.target.files[0])} />
+                <button style={{ margin: "15px" }}>Submit Request</button>
+              </div>
+            </form>
+          </DialogContent>
+        </Dialog>
+      </div>
+    </>
+  );
+};
+
+export default AddItems;
+
+///////////////////////////////////////////////////Convert ImageBase64String to Image (its original format) ////////////////////////////////////////////
+
+// import React, { useEffect, useState } from 'react';
+
+// function TableList() {
+//   const [imageData, setImageData] = useState(null);
+
+//   useEffect(() => {
+//     // Fetch the JSON object from the server
+//     fetch('http://localhost:8000/addItems/1')
+//       .then(response => response.json())
+//       .then(data => setImageData(data.imageBase64String));
+//   }, []);
+
+//   if (!imageData) {
+//     return <div>Loading image...</div>;
+//   }
+
+//   // Convert Base64 to Blob
+//   const byteCharacters = atob(imageData);
+//   const byteArrays = [];
+//   for (let i = 0; i < byteCharacters.length; i++) {
+//     byteArrays.push(byteCharacters.charCodeAt(i));
+//   }
+//   const blob = new Blob([new Uint8Array(byteArrays)], { type: 'image/jpeg' });
+
+//   // Create object URL from Blob
+//   const imageUrl = URL.createObjectURL(blob);
+
+//   // eslint-disable-next-line jsx-a11y/img-redundant-alt
+//   return <img src={imageUrl} alt="Image" />;
+// }
+
+// export default TableList;
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

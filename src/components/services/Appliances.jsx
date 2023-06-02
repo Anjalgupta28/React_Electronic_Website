@@ -54,6 +54,7 @@ const Appliances = () => {
                 console.log(err.message);
             })
     }, [])
+
     return (
         <div style={{ backgroundColor: "#191919" }}>
             <div style={{ color: "white", minHeight: "1000px", padding: "2rem" }}>
