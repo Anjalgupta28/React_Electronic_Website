@@ -8,6 +8,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import { CircularProgress } from "@mui/material";
 
 const AddItems = () => {
   const [open, setOpen] = useState(false);
@@ -19,6 +20,7 @@ const AddItems = () => {
   const [data, setData] = useState(null);
   const [editItemId, setEditItemId] = useState(null);
   const [editItemData, setEditItemData] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
   const formRef = useRef(null);
   const usenavigate = useNavigate();
 
@@ -27,13 +29,16 @@ const AddItems = () => {
   }, []);
 
   const fetchData = () => {
+    setIsLoading(true);
     fetch("http://localhost:8000/addItems")
       .then((res) => res.json())
       .then((resp) => {
         setData(resp);
+        setIsLoading(false);
       })
       .catch((err) => {
         console.log(err.message);
+        setIsLoading(false);
       });
   };
 
@@ -141,6 +146,11 @@ const AddItems = () => {
           <button style={{ marginTop: "1rem" }} onClick={handleClickOpen}>Add Product</button>
         </div>
       </section>
+      {isLoading ? (
+        <div style={{ display: "flex", justifyContent: "center", marginBottom:"1rem" }}>
+          <CircularProgress /> {/* Loader component */}
+        </div>
+      ) : (
 
       <div className="container">
         <div className="card" style={{ marginBottom: "50px" }}>
@@ -242,6 +252,7 @@ const AddItems = () => {
           </div>
         </div>
       </div>
+      )}
 
       <div>
         <Dialog
@@ -293,7 +304,7 @@ export default AddItems;
 //   }
 
 //   // Convert Base64 to Blob
-//   const byteCharacters = atob(imageData);
+//   const byteCharacters = atob(imageData);  
 //   const byteArrays = [];
 //   for (let i = 0; i < byteCharacters.length; i++) {
 //     byteArrays.push(byteCharacters.charCodeAt(i));
