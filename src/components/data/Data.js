@@ -8,7 +8,7 @@ export const nav = [
     path: "/about",
   },
   {
-    text: "Add Product",
+    text: "Product",
     path: "/add",
   },
   // {

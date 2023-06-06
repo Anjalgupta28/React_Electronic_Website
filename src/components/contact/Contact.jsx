@@ -12,50 +12,6 @@ const Contact = () => {
   const [email, setEmail] = useState("");
   const formRef = useRef(null);
 
-  // const [selectedFile, setSelectedFile] = useState(null);
-
-  // const handleFileChange = (event) => {
-  //   setSelectedFile(event.target.files[0]);
-  // };
-
-  // const handleUpload = () => {
-  //   if (!selectedFile) {
-  //     console.error('No file selected');
-  //     return;
-  //   }
-
-  //   const reader = new FileReader();
-  //   reader.onload = () => {
-  //     const base64String = reader.result.split(',')[1];
-  //     postImage(base64String);
-  //   };
-  //   reader.readAsDataURL(selectedFile);
-  // };
-
-  // const postImage = (base64String) => {
-  //   // Perform the post request to the JSON server
-  //   // Here you can use libraries like 'axios' or 'fetch'
-
-  //   const imageData = { base64String };
-
-  //   fetch('http://localhost:8000/images', {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //     body: JSON.stringify(imageData),
-  //   })
-  //     .then(response => response.json())
-  //     .then(data => {
-  //       console.log('Image uploaded successfully:', data);
-  //       // Handle success or perform any additional actions
-  //     })
-  //     .catch(error => {
-  //       console.error('Error uploading image:', error);
-  //       // Handle error or display error message to the user
-  //     });
-  // };
-
   const usenavigate = useNavigate();
 
   const handleSubmit = (e) => {
@@ -79,8 +35,15 @@ const Contact = () => {
           progress: undefined,
           theme: "dark",
         });
-        usenavigate("/home");
+        // usenavigate("/home");
         console.log(res);
+      })
+      .then(() => {
+        // Reset the input value to an empty string
+        setMessage("");
+        setName("")
+        setSubject("")
+        setEmail("")
       })
       .catch((err) => {
         toast.error("Failed:" + err.message, {
