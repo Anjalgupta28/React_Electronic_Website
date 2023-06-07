@@ -13,6 +13,7 @@ import { ToastContainer } from 'react-toastify';
 import Login from "../login/Login";
 import Appliances from "../services/Appliances";
 import AddItems from "../addItems/AddItems";
+import CreateInvoice from "../addItems/createInvoice";
 
 // import PrivateRoute from "../PrivateRoute";
 
@@ -30,6 +31,7 @@ const Pages = () => {
           <Route exact path="/add" element={<AddItems />} />
           {/* <Route exact path="/services" element={<Services />} /> */}
           {/* <Route exact path="/pricing" element={<Pricing />} /> */}
+          <Route exact path="/createInvoice" element={<CreateInvoice />} />
           <Route exact path="/contact" element={<Contact />} />
           <Route exact path="/appliances" element={<Appliances />} />
 

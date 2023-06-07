@@ -51,6 +51,7 @@ const AddItems = () => {
     documentTitle: "UserData",
     onAfterPrint: () => alert("Data Saved Successfully")
   })
+  
   const removeItem = (id) => {
     if (window.confirm('Do you want to remove?')) {
       fetch(`http://localhost:8000/addItems/${id}`, {
@@ -147,11 +148,16 @@ const AddItems = () => {
     };
   };
 
+  const createInvoice = () => {
+    usenavigate("/createInvoice");
+  };
+
   return (
     <>
       <section className='blog-out mb'>
         <Back name='Add Product' title='Add-Product - To add new product in our list ' cover={img} />
         <div className='container recent' style={{ display: "flex", justifyContent: "flex-end" }}>
+        <button style={{ marginTop: "1rem", marginRight: "1rem" }} onClick={createInvoice}>Create Invoice</button>
           <button style={{ marginTop: "1rem", marginRight: "1rem" }} onClick={handleClickOpen}>Add Product</button>
           <button style={{ marginTop: "1rem" }} onClick={generatePDF}>Download PDF<DownloadIcon/></button>
         </div>
