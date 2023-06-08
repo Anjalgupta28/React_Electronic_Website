@@ -6,6 +6,7 @@ import { useReactToPrint } from "react-to-print";
 import DownloadIcon from "@mui/icons-material/Download";
 import Back from "../common/Back";
 import img from "../images/services.jpg";
+import "./createInvoice.css"
 
 const CreateInvoice = () => {
   const [invoiceData, setInvoiceData] = useState([]);
@@ -169,28 +170,28 @@ const CreateInvoice = () => {
           </div>
           <div>
             <h6
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                fontWeight: "bold",
-              }}
+              // style={{
+              //   display: "flex",
+              //   flexDirection: "column",
+              // }}
+              className="font"
             >
               Sold by : GUPTA TRADERS
             </h6>
 
             <h6>
-              <span style={{ fontWeight: "bold", fontStyle: "italic" }}>
+              <span className="font" style={{fontStyle: "italic" }}>
                 Ship-from Address :
               </span>{" "}
               Khalwara Bazar, Kymore-483880, Madhya Pradesh, India
             </h6>
 
             <h6>
-              <span style={{ fontWeight: "bold" }}>Email ID :</span>{" "}
+              <span className="font">Email ID :</span>{" "}
               Guptaarun2810@gmail.com
             </h6>
             <h6>
-              <span style={{ fontWeight: "bold" }}>Contact No :</span>{" "}
+              <span className="font">Contact No :</span>{" "}
               9893085219
             </h6>
             {invoiceData.map((invoice, index) => (
@@ -203,7 +204,7 @@ const CreateInvoice = () => {
                 key={index}
               >
                 <h6>
-                  <span style={{ fontWeight: "bold" }}>GSTIN :</span>{" "}
+                  <span className="font">GSTIN :</span>{" "}
                   23ANQPG4283N1ZI
                 </h6>
                 <h6
@@ -218,7 +219,7 @@ const CreateInvoice = () => {
                   }}
                 >
                   {" "}
-                  <span style={{ fontWeight: "bold" }}>
+                  <span className="font">
                     Invoice Number :
                   </span>{" "}
                   {invoice.invoiceNumber}
@@ -229,7 +230,7 @@ const CreateInvoice = () => {
             <div>
               {invoiceData.map((invoice, index) => (
                 <div key={index}>
-                  <span style={{ fontWeight: "bold" }}>Bill To :</span>
+                  <span className="font">Bill To :</span>
                   <div>{invoice.name}</div>
                   <div>{invoice.address}</div>
                   <div
@@ -240,11 +241,11 @@ const CreateInvoice = () => {
                     }}
                   >
                     <h6>
-                      <span style={{ fontWeight: "bold" }}>Post :</span>
+                      <span className="font">Post :</span>
                       {invoice.post}
                     </h6>
                     <h6>
-                      <span style={{ fontWeight: "bold" }}>
+                      <span className="font">
                         Invoice Date :{" "}
                       </span>
                       {invoice.invoiceDate}
@@ -258,18 +259,18 @@ const CreateInvoice = () => {
                     }}
                   >
                     <h6>
-                      <span style={{ fontWeight: "bold" }}>District :</span>{" "}
+                      <span className="font">District :</span>{" "}
                       {invoice.district}
                     </h6>
                     <h6>
-                      <span style={{ fontWeight: "bold" }}>Order Date :</span>{" "}
+                      <span className="font">Order Date :</span>{" "}
                       {invoice.orderDate}{" "}
                     </h6>
                   </div>
 
                   <div style={{ display: "flex", justifyContent: "end" }}>
                     <h6>
-                      <span style={{ fontWeight: "bold" }}>
+                      <span className="font">
                         Place of Supply :
                       </span>{" "}
                       {invoice.placeOfSupply}{" "}
@@ -278,7 +279,7 @@ const CreateInvoice = () => {
 
                   <div style={{ display: "flex", justifyContent: "end" }}>
                     <h6>
-                      <span style={{ fontWeight: "bold" }}>
+                      <span className="font">
                         Reverse Charge :
                       </span>{" "}
                       {invoice.reverseCharge}{" "}
@@ -287,7 +288,7 @@ const CreateInvoice = () => {
 
                   <div style={{ display: "flex", justifyContent: "end" }}>
                     <h6>
-                      <span style={{ fontWeight: "bold" }}>
+                      <span className="font">
                         Transportation Mode :
                       </span>{" "}
                       {invoice.transMode}
@@ -296,7 +297,7 @@ const CreateInvoice = () => {
 
                   <div style={{ display: "flex", justifyContent: "end" }}>
                     <h6>
-                      <span style={{ fontWeight: "bold" }}>
+                      <span className="font">
                         Vehicle Number :
                       </span>
                       {invoice.vehicleNumber}{" "}
@@ -305,7 +306,7 @@ const CreateInvoice = () => {
 
                   <div style={{ display: "flex", justifyContent: "end" }}>
                     <h6>
-                      <span style={{ fontWeight: "bold" }}>
+                      <span className="font">
                         E-Way Bill No :
                       </span>{" "}
                       {invoice.eWayBillNumber}{" "}
@@ -345,7 +346,7 @@ const CreateInvoice = () => {
 
               <div style={{ border: "1px solid black" }} />
               <div style={{ display: "flex", justifyContent: "end" }}>
-                <span style={{ fontWeight: "bold" }}>Grand Total</span>
+                <span className="font">Grand Total</span>
                 {invoiceData.map((invoice, index) => (
                   <div key={index}>{invoice.grandTotal}</div>
                 ))}

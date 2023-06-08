@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { Dialog, DialogContent, DialogTitle } from "@mui/material";
+import { Dialog, DialogContent, DialogTitle, MenuItem, Select } from "@mui/material";
 import Back from "../common/Back";
 import img from "../images/services.jpg"
 import CheckIcon from '@mui/icons-material/Check';
@@ -31,7 +31,7 @@ const AddItems = () => {
   useEffect(() => {
     fetchData();
   }, []);
-  
+
   const fetchData = () => {
     setIsLoading(true);
     fetch("http://localhost:8000/addItems")
@@ -51,14 +51,14 @@ const AddItems = () => {
     documentTitle: "UserData",
     onAfterPrint: () => alert("Data Saved Successfully")
   })
-  
+
   const removeItem = (id) => {
     if (window.confirm('Do you want to remove?')) {
       fetch(`http://localhost:8000/addItems/${id}`, {
         method: "DELETE",
       })
         .then((res) => {
-          alert('Removed successfully.');
+          // alert('Removed successfully.');
           fetchData();
         })
         .catch((err) => {
@@ -139,8 +139,19 @@ const AddItems = () => {
       })
         .then((res) => {
           toast.success("Data uploaded successfully:");
-          usenavigate("/home");
+          handleClose()
+          fetchData()
           console.log(res);
+        })
+        .then(() => {
+          // Reset the input value to an empty string
+          setProductName("");
+          setProductPrice("")
+          setProductDescription("")
+          setProductBrand("")
+          setCategory("")
+          setSelectedFile("")
+
         })
         .catch((err) => {
           toast.error("Error uploading data:" + err.message);
@@ -157,9 +168,9 @@ const AddItems = () => {
       <section className='blog-out mb'>
         <Back name='Add Product' title='Add-Product - To add new product in our list ' cover={img} />
         <div className='container recent' style={{ display: "flex", justifyContent: "flex-end" }}>
-        <button style={{ marginTop: "1rem", marginRight: "1rem" }} onClick={createInvoice}>Create Invoice</button>
+          <button style={{ marginTop: "1rem", marginRight: "1rem" }} onClick={createInvoice}>Create Invoice</button>
           <button style={{ marginTop: "1rem", marginRight: "1rem" }} onClick={handleClickOpen}>Add Product</button>
-          <button style={{ marginTop: "1rem" }} onClick={generatePDF}>Download PDF<DownloadIcon/></button>
+          <button style={{ marginTop: "1rem" }} onClick={generatePDF}>Download PDF<DownloadIcon /></button>
         </div>
       </section>
       {isLoading ? (
