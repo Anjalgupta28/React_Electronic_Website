@@ -170,10 +170,10 @@ const CreateInvoice = () => {
           </div>
           <div>
             <h6
-              // style={{
-              //   display: "flex",
-              //   flexDirection: "column",
-              // }}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+              }}
               className="font"
             >
               Sold by : GUPTA TRADERS

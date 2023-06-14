@@ -14,6 +14,7 @@ import Login from "../login/Login";
 import Appliances from "../services/Appliances";
 import AddItems from "../addItems/AddItems";
 import CreateInvoice from "../addItems/createInvoice";
+import Product from "../home/featured/Product";
 
 // import PrivateRoute from "../PrivateRoute";
 
@@ -32,6 +33,7 @@ const Pages = () => {
           {/* <Route exact path="/services" element={<Services />} /> */}
           {/* <Route exact path="/pricing" element={<Pricing />} /> */}
           <Route exact path="/createInvoice" element={<CreateInvoice />} />
+          <Route exact path="/productPage" element={<Product />} />
           <Route exact path="/contact" element={<Contact />} />
           <Route exact path="/appliances" element={<Appliances />} />
 

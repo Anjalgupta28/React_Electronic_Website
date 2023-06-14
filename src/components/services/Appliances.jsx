@@ -118,3 +118,24 @@ const Appliances = () => {
     )
 }
 export default Appliances;
+
+// import React from 'react';
+
+// const Appliances = ({ category, data }) => {
+//   // Filter the data based on the selected category
+//   const filteredData = data.filter(product => product.category === category);
+
+//   return (
+//     <div>
+//       <h2>{category} Products:</h2>
+//       {filteredData.map(product => (
+//         <div key={product.id}>
+//           <h3>{product.productName}</h3>
+//           <p>Category: {product.category}</p>
+//         </div>
+//       ))}
+//     </div>
+//   );
+// };
+
+// export default Appliances;
