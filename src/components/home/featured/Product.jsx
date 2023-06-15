@@ -5,6 +5,7 @@ const Product = () => {
     const [products, setProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState(null);
+    const [imageUrls, setImageUrls] = useState([]);
     const [allProductsCount, setAllProductsCount] = useState(0);
     const [electronicsCount, setElectronicsCount] = useState(0);
     const [furnitureCount, setFurnitureCount] = useState(0);
@@ -19,7 +20,6 @@ const Product = () => {
                 setProducts(data);
                 setFilteredProducts(data);
                 // Calculate counts for each category
-
                 const electronics = data.filter(product => product.category === 'Electronics');
                 setElectronicsCount(electronics.length);
 
@@ -34,11 +34,52 @@ const Product = () => {
 
                 const allProducts = electronics.length + furniture.length + kitchen.length + electricals.length;
                 setAllProductsCount(allProducts);
+
+                if (data.length > 0) {
+                    const fetchImageUrls = async () => {
+                        const urls = [];
+                        for (let i = 0; i < data.length; i++) {
+                            const product = data[i];
+                            const response = await fetch(`http://localhost:8000/addItems/${product.id}`);
+                            const imageData = await response.json();
+                            urls.push(imageData.imageBase64String);
+                        }
+                        setImageUrls(urls);
+                    };
+                    fetchImageUrls();
+                }
             })
             .catch(error => {
                 console.error('Error fetching product data:', error);
             });
     }, []);
+
+    const convertToImageUrl = (imageData) => {
+        if (!imageData) return '';
+
+        const byteCharacters = atob(imageData);
+        const byteArrays = [];
+        for (let i = 0; i < byteCharacters.length; i++) {
+            byteArrays.push(byteCharacters.charCodeAt(i));
+        }
+        const blob = new Blob([new Uint8Array(byteArrays)], { type: 'image/jpeg' });
+        return URL.createObjectURL(blob);
+    };
+
+    // if (!imageData) {
+    //     return <div>Loading image...</div>;
+    // }
+
+    // const byteCharacters = atob(imageData);
+    // const byteArrays = [];
+    // for (let i = 0; i < byteCharacters.length; i++) {
+    //     byteArrays.push(byteCharacters.charCodeAt(i));
+    // }
+    // const blob = new Blob([new Uint8Array(byteArrays)], { type: 'image/jpeg' });
+
+    // // Create object URL from Blob
+    // const imageUrl = URL.createObjectURL(blob);
+
 
     const filterProductsByCategory = category => {
         if (category === selectedCategory) {
@@ -62,22 +103,23 @@ const Product = () => {
             <section className='featured background'>
                 <div className='container'>
                     <div className='content grid5 mtop'>
+
                         <div className='box' onClick={() => filterProductsByCategory('All Products')}>
-                            <img src="../../../images/hero/appliance.png" alt='' className='featured img' />
+                            <img src="../../../images/hero/box.png" alt='' className='featured img' />
                             <h4>All Products</h4>
                             <label>{allProductsCount}</label>
-                        </div>
-
-                        <div className='box' onClick={() => filterProductsByCategory('Electronics')}>
-                            <img src="../../../images/hero/appliance.png" alt='' className='featured img' />
-                            <h4>Electronics</h4>
-                            <label>{electronicsCount}</label>
                         </div>
 
                         <div className='box' onClick={() => filterProductsByCategory('Furniture')}>
                             <img src="../../../images/hero/furniture.png" alt='' className='featured img' />
                             <h4>Furniture</h4>
                             <label>{furnitureCount}</label>
+                        </div>
+
+                        <div className='box' onClick={() => filterProductsByCategory('Electronics')}>
+                            <img src="../../../images/hero/appliance.png" alt='' className='featured img' />
+                            <h4>Electronics</h4>
+                            <label>{electronicsCount}</label>
                         </div>
 
                         <div className='box' onClick={() => filterProductsByCategory('Kitchen')}>
@@ -93,24 +135,25 @@ const Product = () => {
                         </div>
                     </div>
 
-                    <div style={{ backgroundColor: "#191919", marginTop:"2rem"  }}>
-                        <div style={{ color: "white", padding: "2rem" }}>
+                    <div style={{ boxShadow: "0 0 20px 0 rgb(112 121 138 / 18%)", backgroundColor: "#ffffff", marginTop: "2rem", borderRadius: "6px" }}>
+                        <div style={{ color: "black", padding: "2rem" }}>
                             <div className="container" style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
                                 <h3>Home Appliances</h3>
-                                <h6 style={{ marginTop: "5px" }}>25 product found</h6>
+                                <h6 style={{ marginTop: "5px" }}>{allProductsCount} Product found</h6>
                             </div>
 
-                            {filteredProducts.map(product => {
-                                const { productName, prdouctPrice, productDescription, productBrand, category, imageBase64String } = product
+                            {filteredProducts.map((product, index) => {
+                                const {prdouctPrice, productDescription, productBrand, category } = product
+                                const imageUrl = convertToImageUrl(imageUrls[index]);
 
                                 return (
                                     <div key={product.id}>
-                                        <div className="container" style={{ color: "white", padding: "2rem" }}>
+                                        <div className="container" style={{ color: "black", padding: "2rem" }}>
                                             <li style={{ borderBottom: "1px solid #f6f6f6", listStyle: "none" }}>
                                                 <div style={{ paddingBottom: "1rem", display: "flex", flexDirection: "row" }}>
                                                     <div className="product-img" style={{ display: "flex", alignItems: "center" }}>
                                                         <div style={{ width: "auto", margin: "0 auto" }}>
-                                                            <img src={imageBase64String} alt="" style={{ height: "300px", width: "300px" }} />
+                                                            <img src={imageUrl} alt="" style={{ height: "300px", width: "300px" }} />
                                                         </div>
                                                     </div>
 
@@ -166,7 +209,7 @@ const Product = () => {
 
 export default Product;
 //  <div style={{ backgroundColor: "#191919" }}>
-//             <div style={{ color: "white", minHeight: "1000px", padding: "2rem" }}>
+//             <div style={{ color: "black", minHeight: "1000px", padding: "2rem" }}>
 //               <div className="container" style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
 //                 <h3>Home Appliances</h3>
 //                 <h6 style={{ marginTop: "5px" }}>25 product found</h6>
@@ -177,7 +220,7 @@ export default Product;
 
 //                 return (
 //                   <div key={product.id}>
-//                     <div className="container" style={{ color: "white", padding: "2rem" }}>
+//                     <div className="container" style={{ color: "black", padding: "2rem" }}>
 //                       <li style={{ borderBottom: "1px solid #f6f6f6", listStyle: "none" }}>
 //                         <div style={{ paddingBottom: "1rem", display: "flex", flexDirection: "row" }}>
 //                           <div className="product-img" style={{ display: "flex", alignItems: "center" }}>
