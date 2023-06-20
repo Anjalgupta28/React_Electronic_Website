@@ -104,8 +104,8 @@ const Footer = () => {
             </div>
           </div>
 
-          {footer.map((val) => (
-            <div className="box">
+          {footer.map((val, index) => (
+            <div className="box" key={index}>
               <h3>{val.title}</h3>
               <ul>
                 {val.text.map((items) => (

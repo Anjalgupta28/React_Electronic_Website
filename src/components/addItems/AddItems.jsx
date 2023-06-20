@@ -19,6 +19,7 @@ const AddItems = () => {
   const [productDescription, setProductDescription] = useState("");
   const [productBrand, setProductBrand] = useState("");
   const [category, setCategory] = useState("");
+  const [discount, setDiscount] = useState("")
   const [selectedFile, setSelectedFile] = useState(null);
   const [data, setData] = useState(null);
   const [editItemId, setEditItemId] = useState(null);
@@ -128,7 +129,7 @@ const AddItems = () => {
     reader.readAsDataURL(selectedFile);
 
     const postImage = (imageBase64String) => {
-      const imageData = { productName, prdouctPrice, productDescription, productBrand, category, imageBase64String };
+      const imageData = { productName, prdouctPrice, productDescription, productBrand, category, discount, imageBase64String };
 
       fetch('http://localhost:8000/addItems', {
         method: 'POST',
@@ -151,6 +152,7 @@ const AddItems = () => {
           setProductBrand("")
           setCategory("")
           setSelectedFile("")
+          setDiscount("")
 
         })
         .catch((err) => {
@@ -195,6 +197,7 @@ const AddItems = () => {
                       <td>Description</td>
                       <td>Brand</td>
                       <td>Category</td>
+                      <td>Discount</td>
                       <td>Action</td>
                     </tr>
                   </thead>
@@ -270,6 +273,19 @@ const AddItems = () => {
                           </td>
                           <td>
                             {editItemId === item.id ? (
+                              <input
+                                type="text"
+                                name="Discount"
+                                value={editItemData.discount || ""}
+                                onChange={handleChange}
+                                required
+                              />
+                            ) : (
+                              item.discount
+                            )}
+                          </td>
+                          <td>
+                            {editItemId === item.id ? (
                               <>
                                 <CheckIcon onClick={handleUpdateItem} style={{ color: "blue", cursor: "pointer" }} />
                                 <CloseIcon onClick={handleCancelEdit} style={{ color: "red", cursor: "pointer" }} />
@@ -315,7 +331,14 @@ const AddItems = () => {
                 <input type="number" value={prdouctPrice} onChange={(e) => setProductPrice(e.target.value)} className="form-control" placeholder="Price" required />
                 <input type="text" value={productDescription} onChange={(e) => setProductDescription(e.target.value)} className="form-control" placeholder="Description" required />
                 <input type="text" value={productBrand} onChange={(e) => setProductBrand(e.target.value)} className="form-control" placeholder="Brand" required />
-                <input type="text" value={category} onChange={(e) => setCategory(e.target.value)} className="form-control" placeholder="Category" required />
+                <input type="number" value={discount} onChange={(e) => setDiscount(e.target.value)} className="form-control" placeholder="Discount" required />
+                <Select value={category} onChange={(e) => setCategory(e.target.value)} className="form-control"  label="Category" required>
+                  <MenuItem value="">Select Category</MenuItem>
+                  <MenuItem value="Electronics">Electronics</MenuItem>
+                  <MenuItem value="Furniture">Furniture</MenuItem>
+                  <MenuItem value="Kitchen">Kitchen</MenuItem>
+                  <MenuItem value="Electricals">Electricals</MenuItem>
+                </Select>
                 <input type="file" multiple="multiple" placeholder="Photos" onChange={(e) => setSelectedFile(e.target.files[0])} />
                 <button style={{ margin: "15px" }}>Submit Request</button>
               </div>
