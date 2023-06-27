@@ -11,10 +11,11 @@ import Contact from "../contact/Contact";
 import Signup from "../Signup/Signup";
 import { ToastContainer } from 'react-toastify';
 import Login from "../login/Login";
-import Appliances from "../services/Appliances";
+// import Appliances from "../services/Appliances";
 import AddItems from "../addItems/AddItems";
 import CreateInvoice from "../addItems/createInvoice";
 import Product from "../home/featured/Product";
+import BuyingProduct from "../home/featured/BuyingProduct";
 
 // import PrivateRoute from "../PrivateRoute";
 
@@ -34,8 +35,9 @@ const Pages = () => {
           {/* <Route exact path="/pricing" element={<Pricing />} /> */}
           <Route exact path="/createInvoice" element={<CreateInvoice />} />
           <Route exact path="/productPage" element={<Product />} />
+          <Route exact path="//buying-product" element={<BuyingProduct />} />
           <Route exact path="/contact" element={<Contact />} />
-          <Route exact path="/appliances" element={<Appliances />} />
+          {/* <Route exact path="/appliances" element={<Appliances />} /> */}
 
           {/* <Route exact path="/private" element={<PrivateRoute />}>
           

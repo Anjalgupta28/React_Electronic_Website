@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import "./Featured.css"
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import TuneIcon from '@mui/icons-material/Tune';
+import { useNavigate } from 'react-router-dom';
+import "./Product.css"
+import "./Featured.css"
 
 const Product = () => {
     const [products, setProducts] = useState([]);
@@ -15,9 +17,10 @@ const Product = () => {
     const [furnitureCount, setFurnitureCount] = useState(0);
     const [kitchenCount, setKitchenCount] = useState(0);
     const [electricalsCount, setElectricalsCount] = useState(0);
-    const [discounts, setDiscounts] = useState([]);
     const [sortOrder, setSortOrder] = useState('asc');
+    const [pricesAfterDiscount, setPricesAfterDiscount] = useState([]);
     const [show, setShow] = useState(null)
+    const usenavigate = useNavigate();
     const open = Boolean(show);
 
     const handleClick = (event) => {
@@ -36,9 +39,9 @@ const Product = () => {
             .then(data => {
                 setProducts(data);
                 setFilteredProducts(data);
-                // Calculate discounts for each product
-                const calculatedDiscounts = data.map(product => product.prdouctPrice * product.discount);
-                setDiscounts(calculatedDiscounts);
+                // Calculate prices after discount for each product
+                const calculatedPricesAfterDiscount = calculatePricesAfterDiscount(data);
+                setPricesAfterDiscount(calculatedPricesAfterDiscount);
 
                 // Calculate counts for each category
                 const electronics = data.filter(product => product.category === 'Electronics');
@@ -76,7 +79,7 @@ const Product = () => {
     }, []);
 
     const convertToImageUrl = (imageData) => {
-        if (!imageData) return '';
+        if (!imageData) return <div>Loading image...</div>;
 
         const byteCharacters = atob(imageData);
         const byteArrays = [];
@@ -87,35 +90,23 @@ const Product = () => {
         return URL.createObjectURL(blob);
     };
 
-    // if (!imageData) {
-    //     return <div>Loading image...</div>;
-    // }
-
-    // const byteCharacters = atob(imageData);
-    // const byteArrays = [];
-    // for (let i = 0; i < byteCharacters.length; i++) {
-    //     byteArrays.push(byteCharacters.charCodeAt(i));
-    // }
-    // const blob = new Blob([new Uint8Array(byteArrays)], { type: 'image/jpeg' });
-
-    // // Create object URL from Blob
-    // const imageUrl = URL.createObjectURL(blob);
-
-
     const filterProductsByCategory = (category) => {
         if (category === selectedCategory) {
             // If the same category is clicked again, show all products
             setFilteredProducts(products);
             setSelectedCategory(null);
+            setPricesAfterDiscount(calculatePricesAfterDiscount(products));
         } else if (category === 'All Products') {
             // If "All Products" is clicked, show all products
             setFilteredProducts(products);
             setSelectedCategory('All Products');
+            setPricesAfterDiscount(calculatePricesAfterDiscount(products));
         } else {
             // Filter products based on the selected category
             const filtered = products.filter((product) => product.category === category);
             setFilteredProducts(filtered);
             setSelectedCategory(category);
+            setPricesAfterDiscount(calculatePricesAfterDiscount(filtered));
         }
     };
 
@@ -142,6 +133,29 @@ const Product = () => {
 
         // Update the filtered products with the sorted list
         setFilteredProducts(sortedProducts);
+
+        // Update the prices after discount based on the sorted products
+        const sortedPricesAfterDiscount = [...pricesAfterDiscount].sort((a, b) => {
+            if (newSortOrder === 'asc') {
+                return a - b;
+            } else {
+                return b - a;
+            }
+        });
+        setPricesAfterDiscount(sortedPricesAfterDiscount);
+    };
+
+    const handleProductClick = (data) => {
+        // Navigate to the "Buying Product" page with the product data
+        usenavigate('/buying-product', { data });
+    };
+
+    const calculatePricesAfterDiscount = (products) => {
+        return products.map((product) => {
+            // return product.prdouctPrice * (1 - product.discount / 100);
+            const priceAfterDiscount = product.prdouctPrice * (1 - product.discount / 100);
+            return Math.round(priceAfterDiscount); // Round off the calculated price
+        });
     };
 
     return (
@@ -181,8 +195,13 @@ const Product = () => {
                         </div>
                     </div>
 
-                    <div style={{ display: "flex", flexDirection: "row", justifyContent: "end", margin: "2rem" }}>
-                        <Button id="basic-button" aria-controls={open ? 'basic-menu' : undefined} aria-haspopup="true" aria-expanded={open ? 'true' : undefined} onClick={handleClick} style={{ border: "1px solid black", color: "black" }}>
+                    <div className="sort">
+                        <Button id="basic-button"
+                            aria-controls={open ? 'basic-menu' : undefined}
+                            aria-haspopup="true"
+                            aria-expanded={open ? 'true' : undefined}
+                            onClick={handleClick}
+                            style={{ border: "1px solid black", color: "black" }}>
                             Sort<TuneIcon />
                         </Button>
                         <Menu
@@ -196,63 +215,65 @@ const Product = () => {
                         </Menu>
                     </div>
 
-                    <div style={{ boxShadow: "0 0 20px 0 rgb(112 121 138 / 18%)", backgroundColor: "#ffffff", marginTop: "2rem", borderRadius: "6px" }}>
-                        <div style={{ color: "black", padding: "2rem" }}>
-                            <div className="container" style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+                    <div className="content-bottom">
+                        <div className="bottom">
+                            <div className="container ha-pf" >
                                 <h3>Home Appliances</h3>
 
-                                <h6 style={{ marginTop: "5px" }}>{allProductsCount} Product found</h6>
+                                <h6 className="product-found">{allProductsCount} Product found</h6>
                             </div>
 
                             {filteredProducts.map((product, index) => {
                                 const { prdouctPrice, productDescription, productBrand, category } = product
-                                {/* const imageUrl = convertToImageUrl(imageUrls[index]); */ }
                                 const imageUrlsByCategory = getImageUrlByCategory(category);
+                                // Calculate the saved amount
+                                const savedAmount = Math.round((prdouctPrice * product.discount) / 100);
 
                                 return (
                                     <div key={product.id}>
-                                        <div className="container" style={{ color: "black", padding: "2rem" }}>
-                                            <li style={{ borderBottom: "1px solid #f6f6f6", listStyle: "none" }}>
-                                                <div style={{ paddingBottom: "1rem", display: "flex", flexDirection: "row" }}>
-                                                    <div className="product-img" style={{ display: "flex", alignItems: "center" }}>
-                                                        <div style={{ width: "auto", margin: "0 auto" }}>
-                                                            <img src={convertToImageUrl(imageUrlsByCategory[index])} alt="" style={{ height: "400px", width: "300px" }} />
-                                                        </div>
+                                        <div className="container main">
+                                            <li className="list">
+                                                <div className="innerBox">
+                                                    <div className="imageBox">
+                                                        <img src={convertToImageUrl(imageUrlsByCategory[index])} alt="" style={{ height: "400px", width: "300px" }} />
                                                     </div>
 
-                                                    <div className="product-info" style={{ marginLeft: "50px", marginBottom: "20px" }}>
+                                                    <div className="product-info">
                                                         <div>
-                                                            <div style={{ display: "flex", flexDirection: "row" }}>
-                                                                <h3 style={{ fontSize: "2rem", lineHeight: "1.3", height: "auto", paddingRight: "3.5rem" }}>{productDescription}</h3>
+                                                            <div className="product-description-box" onClick={() => handleProductClick(product)}>
+                                                                <h3 className="product-description-content">{productDescription}</h3>
                                                                 <i className='fa fa-heart'></i>
                                                             </div>
-                                                            <div style={{ margin: "0.7rem 0", display: "flex", justifyContent: "flex-start" }}>
-                                                                <span style={{ fontSize: "1rem", borderRadius: "0.4rem", border: "1px solid #ff02b9", padding: "0.8rem 1rem", marginRight: "0.8rem", fontWeight: "700", color: "#ff02b9" }}>4-in-1 Convertible</span>
-                                                                <span style={{ fontSize: "1rem", borderRadius: "0.4rem", border: "1px solid #ff02b9", padding: "0.8rem 1rem", marginRight: "0.8rem", fontWeight: "700", color: "#ff02b9" }}>No-Cost EMI upto 12 months</span>
+                                                            <div className="product-offer-box">
+                                                                <span className="product-offer-content">4-in-1 Convertible</span>
+                                                                <span className="product-offer-content">No-Cost EMI upto 12 months</span>
                                                             </div>
                                                         </div>
-                                                        <div style={{ display: "block" }}>
-                                                            <div style={{ paddingBottom: "10px" }}>
+                                                        <div className="bottom-content">
+                                                            <div className="price-to-addtocart-box">
+                                                                <div className="price">
+                                                                    <span>{pricesAfterDiscount[index]}</span>
+                                                                </div>
+                                                                <div className="inc-tax">(Incl. all Taxes)</div>
                                                                 <div>
-                                                                    <button className='btn2'>{category}</button>
+                                                                    <button className="buy-now-button">Buy Now</button>
+                                                                    <button className="add-to-cart-button">Add to Cart</button>
                                                                 </div>
-                                                                <div style={{ fontSize: "2.6rem" }}>
-                                                                    <span>{prdouctPrice}</span>
-
-                                                                </div>
-                                                                <div style={{ marginLeft: 0, fontSize: "1.2rem", fontWeight: "400" }}>(Incl. all Taxes)</div>
                                                             </div>
-                                                            <div className="discount">
-                                                                <span className="oldPrice" style={{ fontSize: "1.4rem" }}>
-                                                                    <span style={{ textDecoration: "line-through", color: "#9a9a9a" }}>
+
+                                                            <div>
+                                                                <span className="oldprice">
+                                                                    <span className="mrp">
                                                                         <span>MRP :  </span>
                                                                         ₹{product.prdouctPrice}
                                                                     </span>
                                                                 </span>
-                                                                <span className="dicount-value" style={{ fontSize: "1.2rem", letterSpacing: "0.33px", marginLeft: "2%", color: "#9a9a9a" }}>(Save ₹{discounts[index]})</span>
-                                                                <span className="discount-percentage" style={{ border: "1px solid #9a9a9a", fontSize: "1.4rem", borderRadius: "0.4rem", lineHeight: 1, marginLeft: "2rem", fontWeight: "700", padding: "1rem 1rem 1rem 1rem", }}>{Math.round(product.discount)}% Off</span>
+                                                                <span className="save-value">(Save ₹{savedAmount})</span>
+                                                                <span className="off-percentage">{Math.round(product.discount)}% Off</span>
                                                             </div>
-                                                            <div className="location" style={{ fontSize: "1.2rem", fontWeight: "400", marginTop: "10px" }}>Brand : {productBrand}</div>
+                                                            <div className="brand">Brand : {productBrand}</div>
+                                                            <div className="brand">Category : {category}</div>
+
                                                         </div>
                                                     </div>
                                                 </div>

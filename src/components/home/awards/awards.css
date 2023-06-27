@@ -31,4 +31,6 @@
 }
 .awards p {
   color: grey;
+  /* mix-blend-mode: multiply; */
 }
+
