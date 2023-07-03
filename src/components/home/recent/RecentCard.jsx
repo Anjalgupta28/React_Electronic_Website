@@ -30,7 +30,7 @@ const RecentCard = () => {
           const imageUrl = convertImage(imageBase64String);
           return (
             <div className='box shadow' key={index}>
-              <div className='img' style={{display:"flex", justifyContent:"center"}}>
+              <div className='img' style={{display:"flex", justifyContent:"center", width:"100%"}}>
                 <img src={imageUrl} alt='' style={{width:"100%", height:"400px"}}/>
               </div>
               <div className='text'>

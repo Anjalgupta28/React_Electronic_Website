@@ -16,8 +16,7 @@ import AddItems from "../addItems/AddItems";
 import CreateInvoice from "../addItems/createInvoice";
 import Product from "../home/featured/Product";
 import BuyingProduct from "../home/featured/BuyingProduct";
-
-// import PrivateRoute from "../PrivateRoute";
+import PrivateRoute from "../PrivateRoute";
 
 const Pages = () => {
   return (
@@ -37,11 +36,6 @@ const Pages = () => {
           <Route exact path="/productPage" element={<Product />} />
           <Route exact path="//buying-product" element={<BuyingProduct />} />
           <Route exact path="/contact" element={<Contact />} />
-          {/* <Route exact path="/appliances" element={<Appliances />} /> */}
-
-          {/* <Route exact path="/private" element={<PrivateRoute />}>
-          
-          </Route> */}
         </Routes>
         <Footer />
       </BrowserRouter>

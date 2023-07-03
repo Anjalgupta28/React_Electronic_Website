@@ -3,9 +3,28 @@ import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import TuneIcon from '@mui/icons-material/Tune';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import RemoveShoppingCartIcon from '@mui/icons-material/RemoveShoppingCart';
+import Badge from '@mui/material/Badge';
+import { Box, Modal } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import "./Product.css"
 import "./Featured.css"
+
+const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 1000,
+    height: 'auto',
+    maxHeight: 900,
+    overflowY: 'auto',
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+};
 
 const Product = () => {
     const [products, setProducts] = useState([]);
@@ -20,6 +39,11 @@ const Product = () => {
     const [sortOrder, setSortOrder] = useState('asc');
     const [pricesAfterDiscount, setPricesAfterDiscount] = useState([]);
     const [show, setShow] = useState(null)
+    const [cart, setCart] = useState([]); // Array to store the selected products
+    const [totalSum, setTotalSum] = useState(0); // Total sum of the selected products
+    const [selectedProduct, setSelectedProduct] = useState(null);
+    const [showModal, setShowModal] = useState(false);
+    const [quantities, setQuantities] = useState({});
     const usenavigate = useNavigate();
     const open = Boolean(show);
 
@@ -30,7 +54,6 @@ const Product = () => {
     const handleClose = () => {
         setShow(null);
     };
-
 
     useEffect(() => {
         // Fetch the product data from the JSON server
@@ -158,6 +181,51 @@ const Product = () => {
         });
     };
 
+    const handleAddToCartClick = (event, product, index) => {
+        event.stopPropagation();
+
+        const itemIndex = cart.findIndex((item) => item.id === product.id);
+        if (itemIndex !== -1) {
+            // Product already exists in the cart, increase the quantity
+            const updatedCart = [...cart];
+            updatedCart[itemIndex].quantity += 1;
+            setCart(updatedCart);
+        } else {
+            // Product is not in the cart, add it as a new item
+            const updatedCart = [...cart, { ...product, quantity: 1 }];
+            setCart(updatedCart);
+        }
+
+        const updatedQuantities = { ...quantities, [product.id]: (quantities[product.id] || 0) + 1 };
+        setQuantities(updatedQuantities);
+
+        const updatedTotalSum = calculateTotalSum(updatedQuantities);
+        setTotalSum(updatedTotalSum);
+
+        setSelectedProduct(product);
+        setShowModal(true);
+
+        const updatedPricesAfterDiscount = [...pricesAfterDiscount];
+        updatedPricesAfterDiscount[index] = calculatePriceAfterDiscount(product);
+        setPricesAfterDiscount(updatedPricesAfterDiscount);
+    }
+    const calculatePriceAfterDiscount = (product) => {
+        return Math.round(product.prdouctPrice * (1 - product.discount / 100));
+    };
+
+    const calculateTotalSum = (quantities) => {
+        return cart.reduce((sum, product) => {
+            const quantity = quantities[product.id] || 0;
+            const price = pricesAfterDiscount[cart.indexOf(product)];
+            return sum + (price * quantity);
+        }, 0);
+    };
+
+    const handleClearCartClick = () => {
+        setCart([]); // Clear the cart by setting it to an empty array
+        setTotalSum(0); // Reset the total sum
+    };
+
     return (
         <>
             <section className='featured background'>
@@ -201,7 +269,7 @@ const Product = () => {
                             aria-haspopup="true"
                             aria-expanded={open ? 'true' : undefined}
                             onClick={handleClick}
-                            style={{ border: "1px solid black", color: "black" }}>
+                            style={{ border: "1px solid black", color: "black", marginRight: "5px" }}>
                             Sort<TuneIcon />
                         </Button>
                         <Menu
@@ -213,6 +281,90 @@ const Product = () => {
                             style={{ marginTop: "1rem" }}>
                             <MenuItem onClick={handleSortButtonClick}>Price: {sortOrder === 'asc' ? 'High to Low' : 'Low to High'}</MenuItem>
                         </Menu>
+
+                        <div>
+                            <Button
+                                style={{ border: "1px solid black", color: "black" }}
+                                onClick={() => setShowModal(true)}>
+                                Cart
+                                <Badge badgeContent={cart.length} color="warning">
+                                    <ShoppingCartIcon />
+                                </Badge>
+                            </Button>
+                            <Modal
+                                open={showModal}
+                                onClose={() => setShowModal(false)}
+                                aria-labelledby="modal-modal-title"
+                                aria-describedby="modal-modal-description"
+                            >
+                                <Box sx={style}>
+                                    <div style={{ padding: "15px" }}>
+                                        <h3>Products in Cart</h3>
+                                        <table className="table table-bordered">
+                                            <thead className="bg-white text-black">
+                                                <tr>
+                                                    <td>Item</td>
+                                                    <td>Price</td>
+                                                    <td>Quantity</td>
+                                                    <td>SubTotal</td>
+                                                    <td>Action</td>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {cart.length > 0 ? (
+                                                    cart.map((product, index) => (
+                                                        <tr key={index}>
+                                                            <td>{product.productDescription}</td>
+                                                            <td>{pricesAfterDiscount[index]}</td>
+                                                            <td> <input
+                                                                type="number"
+                                                                value={quantities[product.id] || 0}
+                                                                min="0"
+                                                                onChange={(event) => {
+                                                                    const updatedQuantities = {
+                                                                        ...quantities,
+                                                                        [product.id]: parseInt(event.target.value)
+                                                                    };
+                                                                    setQuantities(updatedQuantities);
+
+                                                                    const updatedTotalSum = calculateTotalSum(updatedQuantities);
+                                                                    setTotalSum(updatedTotalSum);
+                                                                }}
+                                                            /></td>
+                                                            <td>{pricesAfterDiscount[index] * (quantities[product.id] || 0)}</td>
+                                                            <td></td>
+                                                        </tr>
+                                                    ))
+                                                ) : (
+                                                    <p>No products in the cart.</p>
+                                                )}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div style={{ display: "flex", justifyContent: "end" }}>
+                                        <Button
+                                            style={{ border: "1px solid black", color: "black", marginRight: "5px" }}
+                                            onClick={handleClearCartClick}>
+                                            Clear Cart<RemoveShoppingCartIcon />
+                                        </Button>
+                                    </div>
+                                    <div style={{ backgroundColor: "#d7d9d6", width: "20rem", height: "auto", display: "flex", float: "right", marginTop: "1rem", flexDirection: "column" }}>
+                                        <div style={{ padding: "15px" }}>Cart Item : <span style={{ fontWeight: "bold", marginLeft: "9.5rem" }}>{cart.length}</span></div>
+                                        <div style={{ padding: "15px" }}>Subtotal : <span style={{ fontWeight: "bold", marginLeft: "9.5rem" }}>{totalSum}</span></div>
+                                    </div>
+                                    <div>
+                                        <h3>Current Selected Product</h3>
+                                        {selectedProduct && ( // Check if a product is selected
+                                            <>
+                                                <p>Product Description: <span style={{ fontWeight: "bold" }}>{selectedProduct.productDescription}</span></p>
+                                                <p>Product Price: <span style={{ fontWeight: "bold" }}>{selectedProduct.prdouctPrice}</span></p>
+                                                {/* Add other product details as needed */}
+                                            </>
+                                        )}
+                                    </div>
+                                </Box>
+                            </Modal>
+                        </div>
                     </div>
 
                     <div className="content-bottom">
@@ -257,7 +409,7 @@ const Product = () => {
                                                                 <div className="inc-tax">(Incl. all Taxes)</div>
                                                                 <div>
                                                                     <button className="buy-now-button">Buy Now</button>
-                                                                    <button className="add-to-cart-button">Add to Cart</button>
+                                                                    <button className="add-to-cart-button" onClick={(event) => handleAddToCartClick(event, product, index)}>Add to Cart</button>
                                                                 </div>
                                                             </div>
 
