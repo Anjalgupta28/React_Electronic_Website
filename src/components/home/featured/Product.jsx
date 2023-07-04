@@ -6,6 +6,7 @@ import TuneIcon from '@mui/icons-material/Tune';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import RemoveShoppingCartIcon from '@mui/icons-material/RemoveShoppingCart';
 import Badge from '@mui/material/Badge';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { Box, Modal } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import "./Product.css"
@@ -394,7 +395,9 @@ const Product = () => {
                                                         <div>
                                                             <div className="product-description-box" onClick={() => handleProductClick(product)}>
                                                                 <h3 className="product-description-content">{productDescription}</h3>
-                                                                <i className='fa fa-heart'></i>
+                                                                <div style={{display:"flex", float:"right", justifyContent:"flex-end"}} className='favorite-icon'>
+                                                                <FavoriteBorderIcon/>
+                                                                </div>
                                                             </div>
                                                             <div className="product-offer-box">
                                                                 <span className="product-offer-content">4-in-1 Convertible</span>
