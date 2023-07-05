@@ -16,7 +16,6 @@ import AddItems from "../addItems/AddItems";
 import CreateInvoice from "../addItems/createInvoice";
 import Product from "../home/featured/Product";
 import BuyingProduct from "../home/featured/BuyingProduct";
-import PrivateRoute from "../PrivateRoute";
 
 const Pages = () => {
   return (

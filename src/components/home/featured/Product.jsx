@@ -45,6 +45,9 @@ const Product = () => {
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [quantities, setQuantities] = useState({});
+    const [wishlist, setWishlist] = useState([]);
+    const [showWishlistModal, setShowWishlistModal] = useState(false);
+
     const usenavigate = useNavigate();
     const open = Boolean(show);
 
@@ -63,6 +66,7 @@ const Product = () => {
             .then(data => {
                 setProducts(data);
                 setFilteredProducts(data);
+
                 // Calculate prices after discount for each product
                 const calculatedPricesAfterDiscount = calculatePricesAfterDiscount(data);
                 setPricesAfterDiscount(calculatedPricesAfterDiscount);
@@ -104,7 +108,6 @@ const Product = () => {
 
     const convertToImageUrl = (imageData) => {
         if (!imageData) return <div>Loading image...</div>;
-
         const byteCharacters = atob(imageData);
         const byteArrays = [];
         for (let i = 0; i < byteCharacters.length; i++) {
@@ -120,6 +123,7 @@ const Product = () => {
             setFilteredProducts(products);
             setSelectedCategory(null);
             setPricesAfterDiscount(calculatePricesAfterDiscount(products));
+            console.log(products)
         } else if (category === 'All Products') {
             // If "All Products" is clicked, show all products
             setFilteredProducts(products);
@@ -145,7 +149,6 @@ const Product = () => {
         // Toggle the sort order
         const newSortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
         setSortOrder(newSortOrder);
-
         // Sort the products based on price
         const sortedProducts = [...filteredProducts].sort((a, b) => {
             if (newSortOrder === 'asc') {
@@ -154,10 +157,8 @@ const Product = () => {
                 return b.prdouctPrice - a.prdouctPrice;
             }
         });
-
         // Update the filtered products with the sorted list
         setFilteredProducts(sortedProducts);
-
         // Update the prices after discount based on the sorted products
         const sortedPricesAfterDiscount = [...pricesAfterDiscount].sort((a, b) => {
             if (newSortOrder === 'asc') {
@@ -182,9 +183,16 @@ const Product = () => {
         });
     };
 
+    const calculateTotalSum = (quantities) => {
+        return cart.reduce((sum, product) => {
+            const quantity = quantities[product.id] || 0;
+            const price = pricesAfterDiscount[cart.indexOf(product)];
+            return sum + (price * quantity);
+        }, 0);
+    };
+
     const handleAddToCartClick = (event, product, index) => {
         event.stopPropagation();
-
         const itemIndex = cart.findIndex((item) => item.id === product.id);
         if (itemIndex !== -1) {
             // Product already exists in the cart, increase the quantity
@@ -206,20 +214,27 @@ const Product = () => {
         setSelectedProduct(product);
         setShowModal(true);
 
-        const updatedPricesAfterDiscount = [...pricesAfterDiscount];
+        const updatedPricesAfterDiscount = [...pricesAfterDiscount]; // Create a new array
         updatedPricesAfterDiscount[index] = calculatePriceAfterDiscount(product);
         setPricesAfterDiscount(updatedPricesAfterDiscount);
-    }
-    const calculatePriceAfterDiscount = (product) => {
-        return Math.round(product.prdouctPrice * (1 - product.discount / 100));
     };
 
-    const calculateTotalSum = (quantities) => {
-        return cart.reduce((sum, product) => {
-            const quantity = quantities[product.id] || 0;
-            const price = pricesAfterDiscount[cart.indexOf(product)];
-            return sum + (price * quantity);
-        }, 0);
+    const handleAddToWishlistClick = (event, product) => {
+        event.stopPropagation();
+        const isProductInWishlist = wishlist.some((item) => item.id === product.id);
+        if (isProductInWishlist) {
+            // Remove the product from the wishlist
+            const updatedWishlist = wishlist.filter((item) => item.id !== product.id);
+            setWishlist(updatedWishlist);
+        } else {
+            // Add the product to the wishlist
+            const updatedWishlist = [...wishlist, product];
+            setWishlist(updatedWishlist);
+        }
+    };
+
+    const calculatePriceAfterDiscount = (product) => {
+        return Math.round(product.prdouctPrice * (1 - product.discount / 100));
     };
 
     const handleClearCartClick = () => {
@@ -285,7 +300,7 @@ const Product = () => {
 
                         <div>
                             <Button
-                                style={{ border: "1px solid black", color: "black" }}
+                                style={{ border: "1px solid black", color: "black", marginRight: "5px" }}
                                 onClick={() => setShowModal(true)}>
                                 Cart
                                 <Badge badgeContent={cart.length} color="warning">
@@ -366,6 +381,40 @@ const Product = () => {
                                 </Box>
                             </Modal>
                         </div>
+
+                        <div>
+                            <Button
+                                style={{ border: "1px solid black", color: "black" }}
+                                onClick={() => setShowWishlistModal(true)}>
+                                Wishlist
+                                <Badge badgeContent={wishlist.length} color="error">
+                                    <FavoriteBorderIcon />
+                                </Badge>
+                            </Button>
+                            <Modal
+                                open={showWishlistModal}
+                                onClose={() => setShowWishlistModal(false)}
+                                aria-labelledby="modal-modal-title"
+                                aria-describedby="modal-modal-description"
+                            >
+                                <Box sx={style}>
+                                    <div style={{ padding: "15px" }}>
+                                        <h3>Products in Wishlist</h3>
+                                        {wishlist.length > 0 ? (
+                                            wishlist.map((product, index) => (
+                                                <div key={index}>
+                                                    <h4>{product.productDescription}</h4>
+                                                    {/* Render other details of the product */}
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <p>No products in the wishlist.</p>
+                                        )}
+                                    </div>
+                                    {/* Add any additional content or styling for the wishlist modal */}
+                                </Box>
+                            </Modal>
+                        </div>
                     </div>
 
                     <div className="content-bottom">
@@ -393,10 +442,13 @@ const Product = () => {
 
                                                     <div className="product-info">
                                                         <div>
-                                                            <div className="product-description-box" onClick={() => handleProductClick(product)}>
-                                                                <h3 className="product-description-content">{productDescription}</h3>
-                                                                <div style={{display:"flex", float:"right", justifyContent:"flex-end"}} className='favorite-icon'>
-                                                                <FavoriteBorderIcon/>
+                                                            <div className="product-description-box">
+                                                                <h3 className="product-description-content" onClick={() => handleProductClick(product)}>{productDescription}</h3>
+                                                                <div style={{ display: "flex", float: "right", justifyContent: "flex-end" }} className='favorite-icon'>
+                                                                    <FavoriteBorderIcon
+                                                                        onClick={(event) => handleAddToWishlistClick(event, product)}
+                                                                        className={wishlist.some((item) => item.id === product.id) ? 'wishlist-active' : ''}
+                                                                    />
                                                                 </div>
                                                             </div>
                                                             <div className="product-offer-box">
