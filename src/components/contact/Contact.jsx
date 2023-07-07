@@ -3,7 +3,8 @@ import img from "../images/pricing.jpg";
 import Back from "../common/Back";
 import "./contact.css";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { Breadcrumbs, Link, Typography } from "@mui/material";
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 
 const Contact = () => {
   const [message, setMessage] = useState("");
@@ -11,8 +12,6 @@ const Contact = () => {
   const [subject, setSubject] = useState("");
   const [email, setEmail] = useState("");
   const formRef = useRef(null);
-
-  const usenavigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -59,9 +58,6 @@ const Contact = () => {
       });
   };
 
-  
-
-  
   return (
     <>
       <section className="contact mb">
@@ -70,6 +66,16 @@ const Contact = () => {
           title="Get Helps & Friendly Support"
           cover={img}
         />
+        <div className="container">
+          <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
+            <Link color="inherit" href="/home">
+              Home
+            </Link>
+            <Typography color="textPrimary">
+              Contact
+            </Typography>
+          </Breadcrumbs>
+        </div>
         <div className="container">
           <form
             className="shadow"

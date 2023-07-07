@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Dialog, DialogContent, DialogTitle } from "@mui/material";
+import { Breadcrumbs, Dialog, DialogContent, DialogTitle, Link, Typography } from "@mui/material";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
@@ -7,6 +7,7 @@ import DownloadIcon from "@mui/icons-material/Download";
 import Back from "../common/Back";
 import img from "../images/services.jpg";
 import "./createInvoice.css"
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 
 const CreateInvoice = () => {
   const [invoiceData, setInvoiceData] = useState([]);
@@ -110,7 +111,7 @@ const CreateInvoice = () => {
         // handleReset();
         console.log(res);
       })
-      .then(() => {})
+      .then(() => { })
       .catch((err) => {
         toast.error("Failed:" + err.message, {
           position: "bottom-right",
@@ -134,7 +135,21 @@ const CreateInvoice = () => {
           title="Invoice - To Generate new Invoice Bill "
           cover={img}
         />
+        <div className="container">
+          <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
+            <Link color="inherit" href="/home">
+              Home
+            </Link>
+            <Link color="inherit" href="/add">
+              Add Product
+            </Link>
+            <Typography color="textPrimary">
+              Create Invoice
+            </Typography>
+          </Breadcrumbs>
+        </div>
       </section>
+
       <div className="container">
         <div
           style={{
@@ -181,7 +196,7 @@ const CreateInvoice = () => {
             </h6>
 
             <h6>
-              <span className="font" style={{fontStyle: "italic" }}>
+              <span className="font" style={{ fontStyle: "italic" }}>
                 Ship-from Address :
               </span>{" "}
               Khalwara Bazar, Kymore-483880, Madhya Pradesh, India

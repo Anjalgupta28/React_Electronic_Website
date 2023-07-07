@@ -50,6 +50,7 @@
 .product-description-box{
     display: flex;
     flex-direction: row;
+    cursor: pointer;
 }
 .product-description-content{
     font-size: 2rem;
@@ -121,6 +122,11 @@
     font-weight: 400;
     margin-top: 10px;
 }
+.favorite-icon{
+    display: flex;
+    float: right;
+    margin-top: 2.5rem;
+  }
 .wishlist-active {
     color: red;
   }

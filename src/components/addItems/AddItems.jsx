@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { Dialog, DialogContent, DialogTitle, MenuItem, Select } from "@mui/material";
+import { Breadcrumbs, Dialog, DialogContent, DialogTitle, Link, MenuItem, Select, Typography } from "@mui/material";
 import Back from "../common/Back";
 import img from "../images/services.jpg"
 import CheckIcon from '@mui/icons-material/Check';
@@ -11,6 +11,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DownloadIcon from '@mui/icons-material/Download';
 import { CircularProgress } from "@mui/material";
 import { useReactToPrint } from "react-to-print";
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 
 const AddItems = () => {
   const [open, setOpen] = useState(false);
@@ -169,6 +170,16 @@ const AddItems = () => {
     <>
       <section className='blog-out mb'>
         <Back name='Add Product' title='Add-Product - To add new product in our list ' cover={img} />
+        <div className="container">
+          <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
+            <Link color="inherit" href="/home">
+              Home
+            </Link>
+            <Typography color="textPrimary">
+             Add Product
+            </Typography>
+          </Breadcrumbs>
+        </div>
         <div className='container recent' style={{ display: "flex", justifyContent: "flex-end" }}>
           <button style={{ marginTop: "1rem", marginRight: "1rem" }} onClick={createInvoice}>Create Invoice</button>
           <button style={{ marginTop: "1rem", marginRight: "1rem" }} onClick={handleClickOpen}>Add Product</button>
@@ -332,7 +343,7 @@ const AddItems = () => {
                 <input type="text" value={productDescription} onChange={(e) => setProductDescription(e.target.value)} className="form-control" placeholder="Description" required />
                 <input type="text" value={productBrand} onChange={(e) => setProductBrand(e.target.value)} className="form-control" placeholder="Brand" required />
                 <input type="number" value={discount} onChange={(e) => setDiscount(e.target.value)} className="form-control" placeholder="Discount" required />
-                <Select value={category} onChange={(e) => setCategory(e.target.value)} className="form-control"  label="Category" required>
+                <Select value={category} onChange={(e) => setCategory(e.target.value)} className="form-control" label="Category" required>
                   <MenuItem value="">Select Category</MenuItem>
                   <MenuItem value="Electronics">Electronics</MenuItem>
                   <MenuItem value="Furniture">Furniture</MenuItem>

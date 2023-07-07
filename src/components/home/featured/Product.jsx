@@ -7,7 +7,8 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import RemoveShoppingCartIcon from '@mui/icons-material/RemoveShoppingCart';
 import Badge from '@mui/material/Badge';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import { Box, Modal } from '@mui/material';
+import { Box, Breadcrumbs, Modal, Typography, Link } from '@mui/material';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import { useNavigate } from 'react-router-dom';
 import "./Product.css"
 import "./Featured.css"
@@ -170,9 +171,9 @@ const Product = () => {
         setPricesAfterDiscount(sortedPricesAfterDiscount);
     };
 
-    const handleProductClick = (data) => {
-        // Navigate to the "Buying Product" page with the product data
-        usenavigate('/buying-product', { data });
+    const handleProductClick = (data, index) => {
+        const productData = { ...data, priceAfterDiscount: pricesAfterDiscount[index], image: imageUrls[index] };
+        usenavigate(`/product-details/${data.id}`, { state: { product: productData } });
     };
 
     const calculatePricesAfterDiscount = (products) => {
@@ -246,6 +247,14 @@ const Product = () => {
         <>
             <section className='featured background'>
                 <div className='container'>
+                    <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
+                        <Link color="inherit" href="/home">
+                            Home
+                        </Link>
+                        <Typography color="textPrimary">
+                            Product
+                        </Typography>
+                    </Breadcrumbs>
                     <div className='content grid5 mtop'>
 
                         <div className='box' onClick={() => filterProductsByCategory('All Products')}>
@@ -286,7 +295,7 @@ const Product = () => {
                             aria-expanded={open ? 'true' : undefined}
                             onClick={handleClick}
                             style={{ border: "1px solid black", color: "black", marginRight: "5px" }}>
-                            Sort<TuneIcon />
+                            <TuneIcon />Sort
                         </Button>
                         <Menu
                             id="basic-menu"
@@ -302,9 +311,8 @@ const Product = () => {
                             <Button
                                 style={{ border: "1px solid black", color: "black", marginRight: "5px" }}
                                 onClick={() => setShowModal(true)}>
-                                Cart
                                 <Badge badgeContent={cart.length} color="warning">
-                                    <ShoppingCartIcon />
+                                    <ShoppingCartIcon />Cart
                                 </Badge>
                             </Button>
                             <Modal
@@ -361,7 +369,7 @@ const Product = () => {
                                         <Button
                                             style={{ border: "1px solid black", color: "black", marginRight: "5px" }}
                                             onClick={handleClearCartClick}>
-                                            Clear Cart<RemoveShoppingCartIcon />
+                                            <RemoveShoppingCartIcon />Clear Cart
                                         </Button>
                                     </div>
                                     <div style={{ backgroundColor: "#d7d9d6", width: "20rem", height: "auto", display: "flex", float: "right", marginTop: "1rem", flexDirection: "column" }}>
@@ -386,9 +394,8 @@ const Product = () => {
                             <Button
                                 style={{ border: "1px solid black", color: "black" }}
                                 onClick={() => setShowWishlistModal(true)}>
-                                Wishlist
                                 <Badge badgeContent={wishlist.length} color="error">
-                                    <FavoriteBorderIcon />
+                                    <FavoriteBorderIcon />Wishlist
                                 </Badge>
                             </Button>
                             <Modal
@@ -432,55 +439,57 @@ const Product = () => {
                                 const savedAmount = Math.round((prdouctPrice * product.discount) / 100);
 
                                 return (
-                                    <div key={product.id}>
-                                        <div className="container main">
+                                    <div>
+                                        <div className="favorite-icon">
+                                            <FavoriteBorderIcon
+                                                onClick={(event) => handleAddToWishlistClick(event, product)}
+                                                className={wishlist.some((item) => item.id === product.id) ? 'wishlist-active' : ''}
+                                            />
+                                        </div>
+                                        <div key={product.id}>
                                             <li className="list">
-                                                <div className="innerBox">
-                                                    <div className="imageBox">
-                                                        <img src={convertToImageUrl(imageUrlsByCategory[index])} alt="" style={{ height: "400px", width: "300px" }} />
-                                                    </div>
-
-                                                    <div className="product-info">
-                                                        <div>
-                                                            <div className="product-description-box">
-                                                                <h3 className="product-description-content" onClick={() => handleProductClick(product)}>{productDescription}</h3>
-                                                                <div style={{ display: "flex", float: "right", justifyContent: "flex-end" }} className='favorite-icon'>
-                                                                    <FavoriteBorderIcon
-                                                                        onClick={(event) => handleAddToWishlistClick(event, product)}
-                                                                        className={wishlist.some((item) => item.id === product.id) ? 'wishlist-active' : ''}
-                                                                    />
-                                                                </div>
-                                                            </div>
-                                                            <div className="product-offer-box">
-                                                                <span className="product-offer-content">4-in-1 Convertible</span>
-                                                                <span className="product-offer-content">No-Cost EMI upto 12 months</span>
-                                                            </div>
+                                                <div className="container main">
+                                                    <div className="innerBox">
+                                                        <div className="imageBox">
+                                                            <img src={convertToImageUrl(imageUrlsByCategory[index])} alt="" style={{ height: "400px", width: "300px" }} />
                                                         </div>
-                                                        <div className="bottom-content">
-                                                            <div className="price-to-addtocart-box">
-                                                                <div className="price">
-                                                                    <span>{pricesAfterDiscount[index]}</span>
-                                                                </div>
-                                                                <div className="inc-tax">(Incl. all Taxes)</div>
-                                                                <div>
-                                                                    <button className="buy-now-button">Buy Now</button>
-                                                                    <button className="add-to-cart-button" onClick={(event) => handleAddToCartClick(event, product, index)}>Add to Cart</button>
-                                                                </div>
-                                                            </div>
 
+                                                        <div className="product-info">
                                                             <div>
-                                                                <span className="oldprice">
-                                                                    <span className="mrp">
-                                                                        <span>MRP :  </span>
-                                                                        ₹{product.prdouctPrice}
-                                                                    </span>
-                                                                </span>
-                                                                <span className="save-value">(Save ₹{savedAmount})</span>
-                                                                <span className="off-percentage">{Math.round(product.discount)}% Off</span>
+                                                                <div className="product-description-box">
+                                                                    <h3 className="product-description-content" onClick={() => handleProductClick(product)}>{productDescription}</h3>
+                                                                </div>
+                                                                <div className="product-offer-box">
+                                                                    <span className="product-offer-content">4-in-1 Convertible</span>
+                                                                    <span className="product-offer-content">No-Cost EMI upto 12 months</span>
+                                                                </div>
                                                             </div>
-                                                            <div className="brand">Brand : {productBrand}</div>
-                                                            <div className="brand">Category : {category}</div>
+                                                            <div className="bottom-content">
+                                                                <div className="price-to-addtocart-box">
+                                                                    <div className="price">
+                                                                        <span>{pricesAfterDiscount[index]}</span>
+                                                                    </div>
+                                                                    <div className="inc-tax">(Incl. all Taxes)</div>
+                                                                    <div>
+                                                                        <button className="buy-now-button">Buy Now</button>
+                                                                        <button className="add-to-cart-button" onClick={(event) => handleAddToCartClick(event, product, index)}>Add to Cart</button>
+                                                                    </div>
+                                                                </div>
 
+                                                                <div>
+                                                                    <span className="oldprice">
+                                                                        <span className="mrp">
+                                                                            <span>MRP :  </span>
+                                                                            ₹{product.prdouctPrice}
+                                                                        </span>
+                                                                    </span>
+                                                                    <span className="save-value">(Save ₹{savedAmount})</span>
+                                                                    <span className="off-percentage">{Math.round(product.discount)}% Off</span>
+                                                                </div>
+                                                                <div className="brand">Brand : {productBrand}</div>
+                                                                <div className="brand">Category : {category}</div>
+
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
