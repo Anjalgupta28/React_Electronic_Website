@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Breadcrumbs, Dialog, DialogContent, DialogTitle, Link, MenuItem, Select, Typography } from "@mui/material";
 import Back from "../common/Back";
-import img from "../images/services.jpg"
+import img from "../images/services.jpg";
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -20,19 +20,23 @@ const AddItems = () => {
   const [productDescription, setProductDescription] = useState("");
   const [productBrand, setProductBrand] = useState("");
   const [category, setCategory] = useState("");
-  const [discount, setDiscount] = useState("")
+  const [discount, setDiscount] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
   const [data, setData] = useState(null);
   const [editItemId, setEditItemId] = useState(null);
   const [editItemData, setEditItemData] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const formRef = useRef(null);
-  const componentPDF = useRef()
+  const componentPDF = useRef();
   const usenavigate = useNavigate();
 
   useEffect(() => {
+    const isLoggedIn = localStorage.getItem("userId");
+    if (!isLoggedIn) {
+      usenavigate("/");
+    }
     fetchData();
-  }, []);
+  }, [usenavigate]);
 
   const fetchData = () => {
     setIsLoading(true);
@@ -51,17 +55,17 @@ const AddItems = () => {
   const generatePDF = useReactToPrint({
     content: () => componentPDF.current,
     documentTitle: "UserData",
-    onAfterPrint: () => alert("Data Saved Successfully")
-  })
+    onAfterPrint: () => alert("Data Saved Successfully"),
+  });
 
   const removeItem = (id) => {
-    if (window.confirm('Do you want to remove?')) {
+    if (window.confirm("Do you want to remove?")) {
       fetch(`http://localhost:8000/addItems/${id}`, {
         method: "DELETE",
       })
         .then((res) => {
-          // alert('Removed successfully.');
           fetchData();
+          toast.success("Product removed successfully.");
         })
         .catch((err) => {
           console.log(err.message);
@@ -89,10 +93,10 @@ const AddItems = () => {
       body: JSON.stringify(editItemData),
     })
       .then((res) => {
-        alert('Product updated successfully.');
         fetchData();
         setEditItemId(null);
         setEditItemData({});
+        toast.success("Product updated successfully.");
       })
       .catch((err) => {
         console.log(err.message);
@@ -118,43 +122,48 @@ const AddItems = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!selectedFile) {
-      console.error('No file selected');
+      console.error("No file selected");
       return;
     }
 
     const reader = new FileReader();
     reader.onload = () => {
-      const imageBase64String = reader.result.split(',')[1];
+      const imageBase64String = reader.result.split(",")[1];
       postImage(imageBase64String);
     };
     reader.readAsDataURL(selectedFile);
 
     const postImage = (imageBase64String) => {
-      const imageData = { productName, prdouctPrice, productDescription, productBrand, category, discount, imageBase64String };
+      const imageData = {
+        productName,
+        prdouctPrice,
+        productDescription,
+        productBrand,
+        category,
+        discount,
+        imageBase64String,
+      };
 
-      fetch('http://localhost:8000/addItems', {
-        method: 'POST',
+      fetch("http://localhost:8000/addItems", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(imageData),
       })
         .then((res) => {
           toast.success("Data uploaded successfully:");
-          handleClose()
-          fetchData()
-          console.log(res);
+          handleClose();
+          fetchData();
         })
         .then(() => {
-          // Reset the input value to an empty string
           setProductName("");
-          setProductPrice("")
-          setProductDescription("")
-          setProductBrand("")
-          setCategory("")
-          setSelectedFile("")
-          setDiscount("")
-
+          setProductPrice("");
+          setProductDescription("");
+          setProductBrand("");
+          setCategory("");
+          setSelectedFile(null);
+          setDiscount("");
         })
         .catch((err) => {
           toast.error("Error uploading data:" + err.message);
@@ -164,6 +173,14 @@ const AddItems = () => {
 
   const createInvoice = () => {
     usenavigate("/createInvoice");
+  };
+
+  const updateIDs = () => {
+    const updatedData = data.map((item, index) => ({
+      ...item,
+      id: index + 1,
+    }));
+    setData(updatedData);
   };
 
   return (
@@ -176,7 +193,7 @@ const AddItems = () => {
               Home
             </Link>
             <Typography color="textPrimary">
-             Add Product
+              Add Product
             </Typography>
           </Breadcrumbs>
         </div>
@@ -188,15 +205,14 @@ const AddItems = () => {
       </section>
       {isLoading ? (
         <div style={{ display: "flex", justifyContent: "center", marginBottom: "1rem" }}>
-          <CircularProgress /> {/* Loader component */}
+          <CircularProgress />
         </div>
       ) : (
-
         <div className="container">
           <div className="card" style={{ marginBottom: "50px", boxShadow: "0 0 20px 0 rgb(112 121 138 / 18%)", maxHeight: "700px", overflowY: "scroll", border: "1px solid #ccc", padding: "10px" }}>
             <div style={{ display: "flex", justifyContent: "center" }}>
               <h2>Product Listing</h2>
-            </div>
+           </div>
             <div className="card-body">
               <div ref={componentPDF} style={{ width: "100%" }}>
                 <table className="table table-bordered">
@@ -214,9 +230,9 @@ const AddItems = () => {
                   </thead>
                   <tbody>
                     {data &&
-                      data.map((item) => (
+                      data.map((item, index) => (
                         <tr key={item.id}>
-                          <td>{item.id}</td>
+                          <td>{index + 1}</td>
                           <td>
                             {editItemId === item.id ? (
                               <input
@@ -363,39 +379,40 @@ const AddItems = () => {
 
 export default AddItems;
 
-///////////////////////////////////////////////////Convert ImageBase64String to Image (its original format) ////////////////////////////////////////////
+// ///////////////////////////////////////////////////Convert ImageBase64String to Image (its original format) ////////////////////////////////////////////
 
-// import React, { useEffect, useState } from 'react';
+// // import React, { useEffect, useState } from 'react';
 
-// function TableList() {
-//   const [imageData, setImageData] = useState(null);
+// // function TableList() {
+// //   const [imageData, setImageData] = useState(null);
 
-//   useEffect(() => {
-//     // Fetch the JSON object from the server
-//     fetch('http://localhost:8000/addItems/1')
-//       .then(response => response.json())
-//       .then(data => setImageData(data.imageBase64String));
-//   }, []);
+// //   useEffect(() => {
+// //     // Fetch the JSON object from the server
+// //     fetch('http://localhost:8000/addItems/1')
+// //       .then(response => response.json())
+// //       .then(data => setImageData(data.imageBase64String));
+// //   }, []);
 
-//   if (!imageData) {
-//     return <div>Loading image...</div>;
-//   }
+// //   if (!imageData) {
+// //     return <div>Loading image...</div>;
+// //   }
 
-//   // Convert Base64 to Blob
-//   const byteCharacters = atob(imageData);  
-//   const byteArrays = [];
-//   for (let i = 0; i < byteCharacters.length; i++) {
-//     byteArrays.push(byteCharacters.charCodeAt(i));
-//   }
-//   const blob = new Blob([new Uint8Array(byteArrays)], { type: 'image/jpeg' });
+// //   // Convert Base64 to Blob
+// //   const byteCharacters = atob(imageData);  
+// //   const byteArrays = [];
+// //   for (let i = 0; i < byteCharacters.length; i++) {
+// //     byteArrays.push(byteCharacters.charCodeAt(i));
+// //   }
+// //   const blob = new Blob([new Uint8Array(byteArrays)], { type: 'image/jpeg' });
 
-//   // Create object URL from Blob
-//   const imageUrl = URL.createObjectURL(blob);
+// //   // Create object URL from Blob
+// //   const imageUrl = URL.createObjectURL(blob);
 
-//   // eslint-disable-next-line jsx-a11y/img-redundant-alt
-//   return <img src={imageUrl} alt="Image" />;
-// }
+// //   // eslint-disable-next-line jsx-a11y/img-redundant-alt
+// //   return <img src={imageUrl} alt="Image" />;
+// // }
 
-// export default TableList;
+// // export default TableList;
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+

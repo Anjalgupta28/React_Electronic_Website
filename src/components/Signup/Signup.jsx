@@ -99,7 +99,7 @@ const Signup = () => {
                             </div>
                         </div>
                         <div className="card-footer" style={{display:"flex", justifyContent:"space-evenly"}}>
-                            <Link to={'/login'} className="btn btn-primary">Back</Link>
+                            <Link to={'/'} className="btn btn-primary">Back</Link>
                             <button type="submit" className="btn btn-success">Signup</button>
                         </div>
                     </div>

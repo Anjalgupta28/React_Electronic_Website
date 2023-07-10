@@ -1,10 +1,11 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import img from "../images/pricing.jpg";
 import Back from "../common/Back";
 import "./contact.css";
 import { toast } from "react-toastify";
 import { Breadcrumbs, Link, Typography } from "@mui/material";
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import { useNavigate } from "react-router-dom";
 
 const Contact = () => {
   const [message, setMessage] = useState("");
@@ -12,6 +13,14 @@ const Contact = () => {
   const [subject, setSubject] = useState("");
   const [email, setEmail] = useState("");
   const formRef = useRef(null);
+  const usenavigate = useNavigate();
+
+  useEffect(() => {
+    const isLoggedIn = localStorage.getItem("userId");
+    if (!isLoggedIn) {
+      usenavigate("/");
+    }
+  }, [usenavigate]);
 
   const handleSubmit = (e) => {
     e.preventDefault();

@@ -1,10 +1,22 @@
-import React from "react"
+import React, { useEffect } from "react"
 import Back from "../common/Back"
 import Heading from "../common/Heading"
 import img from "../images/about.jpg"
 import "./about.css"
+import { useNavigate } from "react-router-dom";
 
 const About = () => {
+  const usenavigate = useNavigate();
+
+  // const isLoggedIn = localStorage.getItem("userId");
+  // if (isLoggedIn)
+  // console.log(isLoggedIn)
+  useEffect(() => {
+    const isLoggedIn = localStorage.getItem("userId");
+    if (!isLoggedIn) {
+      usenavigate("/");
+    }
+  }, [usenavigate]);
   return (
     <>
       <section className='about'>

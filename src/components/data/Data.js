@@ -15,14 +15,6 @@ export const nav = [
     text: "contact",
     path: "/contact",
   },
-  {
-    text: "login",
-    path: "/",
-  },
-  {
-    text: "signup",
-    path: "/signup",
-  },
 ]
 export const featured = [
   {

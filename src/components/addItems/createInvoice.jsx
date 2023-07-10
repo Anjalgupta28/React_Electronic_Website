@@ -37,6 +37,13 @@ const CreateInvoice = () => {
   const usenavigate = useNavigate();
 
   useEffect(() => {
+    const isLoggedIn = localStorage.getItem("userId");
+    if (!isLoggedIn) {
+      usenavigate("/");
+    }
+  }, [usenavigate]);
+
+  useEffect(() => {
     fetch("http://localhost:8000/invoice")
       .then((response) => response.json())
       .then((data) => {

@@ -61,50 +61,58 @@ const Product = () => {
     };
 
     useEffect(() => {
-        // Fetch the product data from the JSON server
-        fetch('http://localhost:8000/addItems')
-            .then(response => response.json())
-            .then(data => {
-                setProducts(data);
-                setFilteredProducts(data);
+        // Check if the user is logged in
+        const isLoggedIn = localStorage.getItem("userId") !== null;
 
-                // Calculate prices after discount for each product
-                const calculatedPricesAfterDiscount = calculatePricesAfterDiscount(data);
-                setPricesAfterDiscount(calculatedPricesAfterDiscount);
+        // If the user is not logged in, navigate to the login page
+        if (!isLoggedIn) {
+            usenavigate("/");
+        } else {
+            // Fetch the product data from the JSON server
+            fetch('http://localhost:8000/addItems')
+                .then(response => response.json())
+                .then(data => {
+                    setProducts(data);
+                    setFilteredProducts(data);
 
-                // Calculate counts for each category
-                const electronics = data.filter(product => product.category === 'Electronics');
-                setElectronicsCount(electronics.length);
+                    // Calculate prices after discount for each product
+                    const calculatedPricesAfterDiscount = calculatePricesAfterDiscount(data);
+                    setPricesAfterDiscount(calculatedPricesAfterDiscount);
 
-                const furniture = data.filter(product => product.category === 'Furniture');
-                setFurnitureCount(furniture.length);
+                    // Calculate counts for each category
+                    const electronics = data.filter(product => product.category === 'Electronics');
+                    setElectronicsCount(electronics.length);
 
-                const kitchen = data.filter(product => product.category === 'Kitchen');
-                setKitchenCount(kitchen.length);
+                    const furniture = data.filter(product => product.category === 'Furniture');
+                    setFurnitureCount(furniture.length);
 
-                const electricals = data.filter(product => product.category === 'Electricals');
-                setElectricalsCount(electricals.length);
+                    const kitchen = data.filter(product => product.category === 'Kitchen');
+                    setKitchenCount(kitchen.length);
 
-                const allProducts = electronics.length + furniture.length + kitchen.length + electricals.length;
-                setAllProductsCount(allProducts);
+                    const electricals = data.filter(product => product.category === 'Electricals');
+                    setElectricalsCount(electricals.length);
 
-                if (data.length > 0) {
-                    const fetchImageUrls = async () => {
-                        const urls = [];
-                        for (let i = 0; i < data.length; i++) {
-                            const product = data[i];
-                            const response = await fetch(`http://localhost:8000/addItems/${product.id}`);
-                            const imageData = await response.json();
-                            urls.push(imageData.imageBase64String);
-                        }
-                        setImageUrls(urls);
-                    };
-                    fetchImageUrls();
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching product data:', error);
-            });
+                    const allProducts = electronics.length + furniture.length + kitchen.length + electricals.length;
+                    setAllProductsCount(allProducts);
+
+                    if (data.length > 0) {
+                        const fetchImageUrls = async () => {
+                            const urls = [];
+                            for (let i = 0; i < data.length; i++) {
+                                const product = data[i];
+                                const response = await fetch(`http://localhost:8000/addItems/${product.id}`);
+                                const imageData = await response.json();
+                                urls.push(imageData.imageBase64String);
+                            }
+                            setImageUrls(urls);
+                        };
+                        fetchImageUrls();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching product data:', error);
+                });
+        }
     }, []);
 
     const convertToImageUrl = (imageData) => {
@@ -174,6 +182,7 @@ const Product = () => {
     const handleProductClick = (data, index) => {
         const productData = { ...data, priceAfterDiscount: pricesAfterDiscount[index], image: imageUrls[index] };
         usenavigate(`/product-details/${data.id}`, { state: { product: productData } });
+        console.log(productData)
     };
 
     const calculatePricesAfterDiscount = (products) => {
@@ -247,7 +256,7 @@ const Product = () => {
         <>
             <section className='featured background'>
                 <div className='container'>
-                    <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
+                    <Breadcrumbs separator={<NavigateNextIcon fontSize="small"/>} aria-label="breadcrumb">
                         <Link color="inherit" href="/home">
                             Home
                         </Link>

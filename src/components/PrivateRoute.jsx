@@ -3,6 +3,7 @@ import { Navigate, Outlet } from "react-router-dom";
 
 const PrivateRoute = ({ element: Component, ...rest }) => {
   const isLoggedIn = sessionStorage.getItem("isLoggedIn");
+  console.log(isLoggedIn)
 
   return (
     <Outlet

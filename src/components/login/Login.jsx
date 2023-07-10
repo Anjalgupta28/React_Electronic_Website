@@ -8,6 +8,7 @@ const Login = () => {
     const [password, setPassword] = useState('');
 
     const usenavigate = useNavigate();
+    
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -15,7 +16,7 @@ const Login = () => {
                 .then((res) => {
                     return res.json()
                 }).then((resp) => {
-                    // console.log(resp)
+                    console.log(resp)
                     if(Object.keys(resp).length ===0){
                         toast.error("User not found",
                         {position: "bottom-right",
@@ -28,6 +29,8 @@ const Login = () => {
                         theme: "dark",});
                     }else{
                         if(resp.password === password){
+                        localStorage.setItem("userId",resp.id)
+                        localStorage.setItem("role",resp.role)
                             toast.success('Successfully logged in',
                             {position: "bottom-right",
                             autoClose: 1000,

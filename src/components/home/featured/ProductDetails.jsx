@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Link from '@mui/material/Link';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import { Button, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
 
@@ -11,6 +11,14 @@ const ProductDetails = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const location = useLocation();
   const product = location.state.product;
+  const usenavigate = useNavigate();
+
+  useEffect(() => {
+    const isLoggedIn = localStorage.getItem("userId");
+    if (!isLoggedIn) {
+      usenavigate("/");
+    }
+  }, [usenavigate]);
 
   const priceAfterDiscount = Math.round(product.prdouctPrice - (product.prdouctPrice * (product.discount / 100)));
 
