@@ -175,13 +175,13 @@ const AddItems = () => {
     usenavigate("/createInvoice");
   };
 
-  const updateIDs = () => {
-    const updatedData = data.map((item, index) => ({
-      ...item,
-      id: index + 1,
-    }));
-    setData(updatedData);
-  };
+  // const updateIDs = () => {
+  //   const updatedData = data.map((item, index) => ({
+  //     ...item,
+  //     id: index + 1,
+  //   }));
+  //   setData(updatedData);
+  // };
 
   return (
     <>
@@ -212,7 +212,7 @@ const AddItems = () => {
           <div className="card" style={{ marginBottom: "50px", boxShadow: "0 0 20px 0 rgb(112 121 138 / 18%)", maxHeight: "700px", overflowY: "scroll", border: "1px solid #ccc", padding: "10px" }}>
             <div style={{ display: "flex", justifyContent: "center" }}>
               <h2>Product Listing</h2>
-           </div>
+            </div>
             <div className="card-body">
               <div ref={componentPDF} style={{ width: "100%" }}>
                 <table className="table table-bordered">
@@ -354,18 +354,18 @@ const AddItems = () => {
           <DialogContent>
             <form onSubmit={handleSubmit} ref={formRef} id="myForm" className="shadow" style={{ marginTop: "0px" }}>
               <div>
-                <input type="text" value={productName} onChange={(e) => setProductName(e.target.value)} className="form-control" placeholder="Product Name" required />
-                <input type="number" value={prdouctPrice} onChange={(e) => setProductPrice(e.target.value)} className="form-control" placeholder="Price" required />
-                <input type="text" value={productDescription} onChange={(e) => setProductDescription(e.target.value)} className="form-control" placeholder="Description" required />
-                <input type="text" value={productBrand} onChange={(e) => setProductBrand(e.target.value)} className="form-control" placeholder="Brand" required />
-                <input type="number" value={discount} onChange={(e) => setDiscount(e.target.value)} className="form-control" placeholder="Discount" required />
-                <Select value={category} onChange={(e) => setCategory(e.target.value)} className="form-control" label="Category" required>
+                <Select value={category} onChange={(e) => setCategory(e.target.value)} className="form-control" required>
                   <MenuItem value="">Select Category</MenuItem>
                   <MenuItem value="Electronics">Electronics</MenuItem>
                   <MenuItem value="Furniture">Furniture</MenuItem>
                   <MenuItem value="Kitchen">Kitchen</MenuItem>
                   <MenuItem value="Electricals">Electricals</MenuItem>
                 </Select>
+                <input type="text" value={productName} onChange={(e) => setProductName(e.target.value)} className="form-control" placeholder="Product Name" required />
+                <input type="number" value={prdouctPrice} onChange={(e) => setProductPrice(e.target.value)} className="form-control" placeholder="Price" required />
+                <input type="text" value={productDescription} onChange={(e) => setProductDescription(e.target.value)} className="form-control" placeholder="Description" required />
+                <input type="text" value={productBrand} onChange={(e) => setProductBrand(e.target.value)} className="form-control" placeholder="Brand" required />
+                <input type="number" value={discount} onChange={(e) => setDiscount(e.target.value)} className="form-control" placeholder="Discount" required />
                 <input type="file" multiple="multiple" placeholder="Photos" onChange={(e) => setSelectedFile(e.target.files[0])} />
                 <button style={{ margin: "15px" }}>Submit Request</button>
               </div>
@@ -379,40 +379,476 @@ const AddItems = () => {
 
 export default AddItems;
 
-// ///////////////////////////////////////////////////Convert ImageBase64String to Image (its original format) ////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// // import React, { useEffect, useState } from 'react';
+// import React, { useState } from "react";
+// import { DialogContent, InputLabel, MenuItem, Select } from "@mui/material";
 
-// // function TableList() {
-// //   const [imageData, setImageData] = useState(null);
+// const ElectronicsForm = ({
+//   productName,
+//   setProductName,
+//   productPrice,
+//   setProductPrice,
+//   productDescription,
+//   setProductDescription,
+//   productBrand,
+//   setProductBrand,
+//   discount,
+//   setDiscount,
+//   selectedFile,
+//   setSelectedFile,
+// }) => {
+//   return (
+//     <>
+//       <input
+//         type="text"
+//         value={productName}
+//         onChange={(e) => setProductName(e.target.value)}
+//         className="form-control"
+//         placeholder="Product Name"
+//         required
+//       />
+//       <input
+//         type="text"
+//         value={productBrand}
+//         onChange={(e) => setProductBrand(e.target.value)}
+//         className="form-control"
+//         placeholder="Brand"
+//         required
+//       />
+//       <input
+//         type="text"
+//         value={productDescription}
+//         onChange={(e) => setProductDescription(e.target.value)}
+//         className="form-control"
+//         placeholder="Description"
+//         required
+//       />
+//       <input
+//         type="number"
+//         value={productPrice}
+//         onChange={(e) => setProductPrice(e.target.value)}
+//         className="form-control"
+//         placeholder="Price"
+//         required
+//       />
+//       <input
+//         type="number"
+//         value={discount}
+//         onChange={(e) => setDiscount(e.target.value)}
+//         className="form-control"
+//         placeholder="Discount"
+//         required
+//       />
+//       <input
+//         type="file"
+//         multiple="multiple"
+//         placeholder="Photos"
+//         onChange={(e) => setSelectedFile(e.target.files[0])}
+//       />
+//       {/* Add additional input fields for Electronics category */}
+//       <input type="text" placeholder="Product ID" />
+//       <input type="text" placeholder="Features" />
+//       <input type="text" placeholder="Specifications" />
+//       <input type="text" placeholder="Connectivity" />
+//       <input type="text" placeholder="Display Size" />
+//       <input type="text" placeholder="Resolution" />
+//       <input type="text" placeholder="Processor Type" />
+//       <input type="text" placeholder="RAM" />
+//       <input type="text" placeholder="Storage Capacity" />
+//       <input type="text" placeholder="Operating System" />
+//       <input type="text" placeholder="Battery Life" />
+//       <input type="text" placeholder="Weight" />
+//       <input type="text" placeholder="Color" />
+//       <input type="text" placeholder="Warranty" />
+//       <input type="text" placeholder="Reviews" />
+//     </>
+//   );
+// };
 
-// //   useEffect(() => {
-// //     // Fetch the JSON object from the server
-// //     fetch('http://localhost:8000/addItems/1')
-// //       .then(response => response.json())
-// //       .then(data => setImageData(data.imageBase64String));
-// //   }, []);
+// const FurnitureForm = ({
+//   productName,
+//   setProductName,
+//   productPrice,
+//   setProductPrice,
+//   productDescription,
+//   setProductDescription,
+//   productBrand,
+//   setProductBrand,
+//   discount,
+//   setDiscount,
+//   selectedFile,
+//   setSelectedFile,
+// }) => {
+//   return (
+//     <>
+//       <input
+//         type="text"
+//         value={productName}
+//         onChange={(e) => setProductName(e.target.value)}
+//         className="form-control"
+//         placeholder="Product Name"
+//         required
+//       />
+//       <input
+//         type="text"
+//         value={productBrand}
+//         onChange={(e) => setProductBrand(e.target.value)}
+//         className="form-control"
+//         placeholder="Brand"
+//         required
+//       />
+//       <input
+//         type="text"
+//         value={productDescription}
+//         onChange={(e) => setProductDescription(e.target.value)}
+//         className="form-control"
+//         placeholder="Description"
+//         required
+//       />
+//       <input
+//         type="number"
+//         value={productPrice}
+//         onChange={(e) => setProductPrice(e.target.value)}
+//         className="form-control"
+//         placeholder="Price"
+//         required
+//       />
+//       <input
+//         type="number"
+//         value={discount}
+//         onChange={(e) => setDiscount(e.target.value)}
+//         className="form-control"
+//         placeholder="Discount"
+//         required
+//       />
+//       <input
+//         type="file"
+//         multiple="multiple"
+//         placeholder="Photos"
+//         onChange={(e) => setSelectedFile(e.target.files[0])}
+//       />
+//       {/* Add additional input fields for Furniture category */}
+//       <input type="text" placeholder="Product ID" />
+//       <input type="text" placeholder="Type" />
+//       <input type="text" placeholder="Material" />
+//       <input type="text" placeholder="Dimensions" />
+//       <input type="text" placeholder="Style" />
+//       <input type="text" placeholder="Upholstery Material" />
+//       <input type="text" placeholder="Assembly Required" />
+//       <input type="text" placeholder="Weight Capacity" />
+//       <input type="text" placeholder="Number of Pieces" />
+//       <input type="text" placeholder="Care Instructions" />
+//       <input type="text" placeholder="Shipping Dimensions" />
+//       <input type="text" placeholder="Assembly Dimensions" />
+//       <input type="text" placeholder="Reviews" />
+//     </>
+//   );
+// };
 
-// //   if (!imageData) {
-// //     return <div>Loading image...</div>;
-// //   }
+// const KitchenForm = ({
+//   productName,
+//   setProductName,
+//   productPrice,
+//   setProductPrice,
+//   productDescription,
+//   setProductDescription,
+//   productBrand,
+//   setProductBrand,
+//   discount,
+//   setDiscount,
+//   selectedFile,
+//   setSelectedFile,
+// }) => {
+//   return (
+//     <>
+//       <input
+//         type="text"
+//         value={productName}
+//         onChange={(e) => setProductName(e.target.value)}
+//         className="form-control"
+//         placeholder="Product Name"
+//         required
+//       />
+//       <input
+//         type="text"
+//         value={productBrand}
+//         onChange={(e) => setProductBrand(e.target.value)}
+//         className="form-control"
+//         placeholder="Brand"
+//         required
+//       />
+//       <input
+//         type="text"
+//         value={productDescription}
+//         onChange={(e) => setProductDescription(e.target.value)}
+//         className="form-control"
+//         placeholder="Description"
+//         required
+//       />
+//       <input
+//         type="number"
+//         value={productPrice}
+//         onChange={(e) => setProductPrice(e.target.value)}
+//         className="form-control"
+//         placeholder="Price"
+//         required
+//       />
+//       <input
+//         type="number"
+//         value={discount}
+//         onChange={(e) => setDiscount(e.target.value)}
+//         className="form-control"
+//         placeholder="Discount"
+//         required
+//       />
+//       <input
+//         type="file"
+//         multiple="multiple"
+//         placeholder="Photos"
+//         onChange={(e) => setSelectedFile(e.target.files[0])}
+//       />
+//       {/* Add additional input fields for Kitchen category */}
+//       <input type="text" placeholder="Product ID" />
+//       <input type="text" placeholder="Capacity" />
+//       <input type="text" placeholder="Feature" />
+//       <input type="text" placeholder="Specification" />
+//       <input type="text" placeholder="Power/Wattage" />
+//       <input type="text" placeholder="Speed Setting" />
+//       <input type="text" placeholder="Cooking Mode/Program" />
+//       <input type="text" placeholder="Safety Feature" />
+//       <input type="text" placeholder="Included Accessories" />
+//       <input type="text" placeholder="Dimensions" />
+//       <input type="text" placeholder="Reviews" />
+//     </>
+//   );
+// };
 
-// //   // Convert Base64 to Blob
-// //   const byteCharacters = atob(imageData);  
-// //   const byteArrays = [];
-// //   for (let i = 0; i < byteCharacters.length; i++) {
-// //     byteArrays.push(byteCharacters.charCodeAt(i));
-// //   }
-// //   const blob = new Blob([new Uint8Array(byteArrays)], { type: 'image/jpeg' });
+// const ElectricalsForm = ({
+//   productName,
+//   setProductName,
+//   productPrice,
+//   setProductPrice,
+//   productDescription,
+//   setProductDescription,
+//   productBrand,
+//   setProductBrand,
+//   discount,
+//   setDiscount,
+//   selectedFile,
+//   setSelectedFile,
+// }) => {
+//   return (
+//     <>
+//       <input
+//         type="text"
+//         value={productName}
+//         onChange={(e) => setProductName(e.target.value)}
+//         className="form-control"
+//         placeholder="Product Name"
+//         required
+//       />
+//       <input
+//         type="text"
+//         value={productBrand}
+//         onChange={(e) => setProductBrand(e.target.value)}
+//         className="form-control"
+//         placeholder="Brand"
+//         required
+//       />
+//       <input
+//         type="text"
+//         value={productDescription}
+//         onChange={(e) => setProductDescription(e.target.value)}
+//         className="form-control"
+//         placeholder="Description"
+//         required
+//       />
+//       <input
+//         type="number"
+//         value={productPrice}
+//         onChange={(e) => setProductPrice(e.target.value)}
+//         className="form-control"
+//         placeholder="Price"
+//         required
+//       />
+//       <input
+//         type="number"
+//         value={discount}
+//         onChange={(e) => setDiscount(e.target.value)}
+//         className="form-control"
+//         placeholder="Discount"
+//         required
+//       />
+//       <input
+//         type="file"
+//         multiple="multiple"
+//         placeholder="Photos"
+//         onChange={(e) => setSelectedFile(e.target.files[0])}
+//       />
+//       {/* Add additional input fields for Electricals category */}
+//       <input type="text" placeholder="Product ID" />
+//       <input type="text" placeholder="Type" />
+//       <input type="text" placeholder="Voltage Rating" />
+//       <input type="text" placeholder="Current Rating" />
+//       <input type="text" placeholder="Power Rating" />
+//       <input type="text" placeholder="Number of Poles" />
+//       <input type="text" placeholder="Rated Current" />
+//       <input type="text" placeholder="Mounting Type" />
+//       <input type="text" placeholder="Certification" />
+//       <input type="text" placeholder="Installation Requirement" />
+//       <input type="text" placeholder="Dimensions" />
+//       <input type="text" placeholder="Reviews" />
+//     </>
+//   );
+// };
 
-// //   // Create object URL from Blob
-// //   const imageUrl = URL.createObjectURL(blob);
+// const YourComponent = () => {
+//   const [category, setCategory] = useState("");
+//   const [productName, setProductName] = useState("");
+//   const [productPrice, setProductPrice] = useState("");
+//   const [productDescription, setProductDescription] = useState("");
+//   const [productBrand, setProductBrand] = useState("");
+//   const [discount, setDiscount] = useState("");
+//   const [selectedFile, setSelectedFile] = useState(null);
 
-// //   // eslint-disable-next-line jsx-a11y/img-redundant-alt
-// //   return <img src={imageUrl} alt="Image" />;
-// // }
+//   const handleCategoryChange = (e) => {
+//     setCategory(e.target.value);
+//     // Reset other form values when category changes
+//     setProductName("");
+//     setProductPrice("");
+//     setProductDescription("");
+//     setProductBrand("");
+//     setDiscount("");
+//     setSelectedFile(null);
+//   };
 
-// // export default TableList;
+//   const handleSubmit = (e) => {
+//     e.preventDefault();
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//     // Create an object to hold the form data
+//     const formData = {
+//       productName,
+//       productPrice,
+//       productDescription,
+//       productBrand,
+//       discount,
+//       selectedFile,
+//     };
 
+//     // Make a POST request to JSON Server to store the form data
+//     fetch("http://localhost:3001/" + category.toLowerCase() + "s", {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//       body: JSON.stringify(formData),
+//     })
+//       .then((response) => response.json())
+//       .then((data) => {
+//         console.log("Form data stored successfully:", data);
+//         // Reset form values
+//         setProductName("");
+//         setProductPrice("");
+//         setProductDescription("");
+//         setProductBrand("");
+//         setDiscount("");
+//         setSelectedFile(null);
+//       })
+//       .catch((error) => {
+//         console.error("Error storing form data:", error);
+//       });
+//   };
+
+//   return (
+//     <div>
+//       <InputLabel id="category-label">Category</InputLabel>
+//       <Select
+//         labelId="category-label"
+//         value={category}
+//         onChange={handleCategoryChange}
+//         className="form-control"
+//         required
+//       >
+//         <MenuItem value="">Select Category</MenuItem>
+//         <MenuItem value="Electronics">Electronics</MenuItem>
+//         <MenuItem value="Furniture">Furniture</MenuItem>
+//         <MenuItem value="Kitchen">Kitchen</MenuItem>
+//         <MenuItem value="Electricals">Electricals</MenuItem>
+//       </Select>
+//       <DialogContent>
+//         <form onSubmit={handleSubmit} id="myForm" className="shadow" style={{ marginTop: "0px" }}>
+//           <div>
+//             {category === "Electronics" && (
+//               <ElectronicsForm
+//                 productName={productName}
+//                 setProductName={setProductName}
+//                 productPrice={productPrice}
+//                 setProductPrice={setProductPrice}
+//                 productDescription={productDescription}
+//                 setProductDescription={setProductDescription}
+//                 productBrand={productBrand}
+//                 setProductBrand={setProductBrand}
+//                 discount={discount}
+//                 setDiscount={setDiscount}
+//                 selectedFile={selectedFile}
+//                 setSelectedFile={setSelectedFile}
+//               />
+//             )}
+//             {category === "Furniture" && (
+//               <FurnitureForm
+//                 productName={productName}
+//                 setProductName={setProductName}
+//                 productPrice={productPrice}
+//                 setProductPrice={setProductPrice}
+//                 productDescription={productDescription}
+//                 setProductDescription={setProductDescription}
+//                 productBrand={productBrand}
+//                 setProductBrand={setProductBrand}
+//                 discount={discount}
+//                 setDiscount={setDiscount}
+//                 selectedFile={selectedFile}
+//                 setSelectedFile={setSelectedFile}
+//               />
+//             )}
+//             {category === "Kitchen" && (
+//               <KitchenForm
+//                 productName={productName}
+//                 setProductName={setProductName}
+//                 productPrice={productPrice}
+//                 setProductPrice={setProductPrice}
+//                 productDescription={productDescription}
+//                 setProductDescription={setProductDescription}
+//                 productBrand={productBrand}
+//                 setProductBrand={setProductBrand}
+//                 discount={discount}
+//                 setDiscount={setDiscount}
+//                 selectedFile={selectedFile}
+//                 setSelectedFile={setSelectedFile}
+//               />
+//             )}
+//             {category === "Electricals" && (
+//               <ElectricalsForm
+//                 productName={productName}
+//                 setProductName={setProductName}
+//                 productPrice={productPrice}
+//                 setProductPrice={setProductPrice}
+//                 productDescription={productDescription}
+//                 setProductDescription={setProductDescription}
+//                 productBrand={productBrand}
+//                 setProductBrand={setProductBrand}
+//                 discount={discount}
+//                 setDiscount={setDiscount}
+//                 selectedFile={selectedFile}
+//                 setSelectedFile={setSelectedFile}
+//               />
+//             )}
+//           </div>
+//           <button style={{ margin: "15px" }}>Submit Request</button>
+//         </form>
+//       </DialogContent>
+//     </div>
+//   );
+// };
+
+// export default YourComponent;

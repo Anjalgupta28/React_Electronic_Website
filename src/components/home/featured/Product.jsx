@@ -63,7 +63,6 @@ const Product = () => {
     useEffect(() => {
         // Check if the user is logged in
         const isLoggedIn = localStorage.getItem("userId") !== null;
-
         // If the user is not logged in, navigate to the login page
         if (!isLoggedIn) {
             usenavigate("/");
