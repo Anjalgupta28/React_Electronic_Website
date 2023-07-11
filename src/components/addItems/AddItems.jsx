@@ -16,7 +16,7 @@ import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 const AddItems = () => {
   const [open, setOpen] = useState(false);
   const [productName, setProductName] = useState("");
-  const [prdouctPrice, setProductPrice] = useState("");
+  const [productPrice, setProductPrice] = useState("");
   const [productDescription, setProductDescription] = useState("");
   const [productBrand, setProductBrand] = useState("");
   const [category, setCategory] = useState("");
@@ -136,7 +136,7 @@ const AddItems = () => {
     const postImage = (imageBase64String) => {
       const imageData = {
         productName,
-        prdouctPrice,
+        productPrice,
         productDescription,
         productBrand,
         category,
@@ -250,13 +250,13 @@ const AddItems = () => {
                             {editItemId === item.id ? (
                               <input
                                 type="number"
-                                name="prdouctPrice"
-                                value={editItemData.prdouctPrice || ""}
+                                name="productPrice"
+                                value={editItemData.productPrice || ""}
                                 onChange={handleChange}
                                 required
                               />
                             ) : (
-                              item.prdouctPrice
+                              item.productPrice
                             )}
                           </td>
                           <td>
@@ -362,7 +362,7 @@ const AddItems = () => {
                   <MenuItem value="Electricals">Electricals</MenuItem>
                 </Select>
                 <input type="text" value={productName} onChange={(e) => setProductName(e.target.value)} className="form-control" placeholder="Product Name" required />
-                <input type="number" value={prdouctPrice} onChange={(e) => setProductPrice(e.target.value)} className="form-control" placeholder="Price" required />
+                <input type="number" value={productPrice} onChange={(e) => setProductPrice(e.target.value)} className="form-control" placeholder="Price" required />
                 <input type="text" value={productDescription} onChange={(e) => setProductDescription(e.target.value)} className="form-control" placeholder="Description" required />
                 <input type="text" value={productBrand} onChange={(e) => setProductBrand(e.target.value)} className="form-control" placeholder="Brand" required />
                 <input type="number" value={discount} onChange={(e) => setDiscount(e.target.value)} className="form-control" placeholder="Discount" required />

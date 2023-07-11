@@ -64,7 +64,7 @@
   "addItems": [
     {
       "productName": "Samsung Television",
-      "prdouctPrice": "25450",
+      "productPrice": "25450",
       "productDescription": "Samsung UHD Television, 25\" Smart UHD Television",
       "productBrand": "Samsung",
       "category": "Electronics",
@@ -74,7 +74,7 @@
     },
     {
       "productName": "Usha Fan",
-      "prdouctPrice": "5560",
+      "productPrice": "5560",
       "productDescription": "USHA High Speed fan, 5 Speed , with copper Winding",
       "productBrand": "USHA",
       "category": "Electricals",
@@ -84,7 +84,7 @@
     },
     {
       "productName": "Mixer Juicer",
-      "prdouctPrice": "8850",
+      "productPrice": "8850",
       "productDescription": "Sujata Mixer Grinder Commercial Purpose",
       "productBrand": "Sujata",
       "category": "Kitchen",
@@ -94,7 +94,7 @@
     },
     {
       "productName": "LG Refridgerator",
-      "prdouctPrice": "15520",
+      "productPrice": "15520",
       "productDescription": "LG Refridgerator 5 Star Rating, 10 Year Warrantee",
       "productBrand": "LG",
       "category": "Electronics",
@@ -104,7 +104,7 @@
     },
     {
       "productName": "Fan",
-      "prdouctPrice": "6330",
+      "productPrice": "6330",
       "productDescription": "Bajaj Ceiling Fan, with 5 Start Rating, and 2 Year Warrantee",
       "productBrand": "Bajaj",
       "category": "Electricals",
@@ -114,7 +114,7 @@
     },
     {
       "productName": "Dining Table",
-      "prdouctPrice": "35200",
+      "productPrice": "35200",
       "productDescription": "Nilkamal Dining Table with High Quality, ",
       "productBrand": "Nilkamal",
       "category": "Furniture",
@@ -124,7 +124,7 @@
     },
     {
       "productName": "Table ",
-      "prdouctPrice": "45620",
+      "productPrice": "45620",
       "productDescription": "Nilkamal Table, High Quality and 2 year Warranty",
       "productBrand": "Nilkamal",
       "category": "Furniture",
@@ -134,7 +134,7 @@
     },
     {
       "productName": "Samsung Refridgerator",
-      "prdouctPrice": "32502",
+      "productPrice": "32502",
       "productDescription": "Samsung Refridgerator, 5 Star Rating with 20 Years of Compressor Warranty, ",
       "productBrand": "Samsung",
       "category": "Electronics",
@@ -144,7 +144,7 @@
     },
     {
       "productName": "Samsung Washing Machine",
-      "prdouctPrice": "45213",
+      "productPrice": "45213",
       "productDescription": "Samsung Washing Machine with 10 Years of Warranty, Rat Control Liquid",
       "productBrand": "Samsung",
       "category": "Electronics",
@@ -154,7 +154,7 @@
     },
     {
       "productName": "Bajaj Mixer Grinder",
-      "prdouctPrice": "4562",
+      "productPrice": "4562",
       "productDescription": "Bajaj Mixer Grinder, with 10 years of warranty, 5 start Rating, ",
       "productBrand": "Bajaj",
       "category": "Electronics",
@@ -164,7 +164,7 @@
     },
     {
       "productName": "Mixer Grinder",
-      "prdouctPrice": "45212",
+      "productPrice": "45212",
       "productDescription": "Mixer Grinder bajaj, 500Watt, 5 Star Rating",
       "productBrand": "Bajaj",
       "category": "Kitchen",

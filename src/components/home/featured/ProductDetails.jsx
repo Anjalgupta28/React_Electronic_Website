@@ -20,9 +20,9 @@ const ProductDetails = () => {
     }
   }, [usenavigate]);
 
-  const priceAfterDiscount = Math.round(product.prdouctPrice - (product.prdouctPrice * (product.discount / 100)));
+  const priceAfterDiscount = Math.round(product.productPrice - (product.productPrice * (product.discount / 100)));
 
-  const amountSaved = product.prdouctPrice - priceAfterDiscount;
+  const amountSaved = product.productPrice - priceAfterDiscount;
 
   const handleIconHover = () => {
     setIsModalOpen(true);
@@ -62,7 +62,7 @@ const ProductDetails = () => {
 
           <div style={{ alignItems: "center", display: "flex", marginTop: "1.5rem" }}>
             <h1>₹{priceAfterDiscount}</h1>
-            <div style={{ textDecoration: "line-through", marginLeft: "15px", fontSize: "20px", color: "#878787" }}>₹{product.prdouctPrice}</div>
+            <div style={{ textDecoration: "line-through", marginLeft: "15px", fontSize: "20px", color: "#878787" }}>₹{product.productPrice}</div>
             <div style={{ marginLeft: "12px", fontSize: "16px", fontWeight: "bold", color: "#388e3c", verticalAlign: "middle" }}>{product.discount}% off</div>
             <div style={{ marginLeft: "15px", color: "grey" }}
                onMouseEnter={handleIconHover}
@@ -76,7 +76,7 @@ const ProductDetails = () => {
                   </div>
                   <div style={{ marginTop: "15px", color: "grey", display: "flex" }}>
                     <div style={{fontWeight:"bold"}}>Maximum Retail Price</div>
-                    <div style={{ textDecoration: "line-through", marginLeft: "70px", color: "black" }}>₹ {product.prdouctPrice}.00</div>
+                    <div style={{ textDecoration: "line-through", marginLeft: "70px", color: "black" }}>₹ {product.productPrice}.00</div>
                   </div>
                   <div style={{fontSize:"12px", fontWeight:"bold"}}>(Incl. of all taxes)</div>
                   <div style={{backgroundColor:"grey", height:"1px", width:"100%", marginTop:"15px"}}/>

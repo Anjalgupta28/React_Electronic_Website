@@ -160,9 +160,9 @@ const Product = () => {
         // Sort the products based on price
         const sortedProducts = [...filteredProducts].sort((a, b) => {
             if (newSortOrder === 'asc') {
-                return a.prdouctPrice - b.prdouctPrice;
+                return a.productPrice - b.productPrice;
             } else {
-                return b.prdouctPrice - a.prdouctPrice;
+                return b.productPrice - a.productPrice;
             }
         });
         // Update the filtered products with the sorted list
@@ -186,8 +186,8 @@ const Product = () => {
 
     const calculatePricesAfterDiscount = (products) => {
         return products.map((product) => {
-            // return product.prdouctPrice * (1 - product.discount / 100);
-            const priceAfterDiscount = product.prdouctPrice * (1 - product.discount / 100);
+            // return product.productPrice * (1 - product.discount / 100);
+            const priceAfterDiscount = product.productPrice * (1 - product.discount / 100);
             return Math.round(priceAfterDiscount); // Round off the calculated price
         });
     };
@@ -243,7 +243,7 @@ const Product = () => {
     };
 
     const calculatePriceAfterDiscount = (product) => {
-        return Math.round(product.prdouctPrice * (1 - product.discount / 100));
+        return Math.round(product.productPrice * (1 - product.discount / 100));
     };
 
     const handleClearCartClick = () => {
@@ -389,7 +389,7 @@ const Product = () => {
                                         {selectedProduct && ( // Check if a product is selected
                                             <>
                                                 <p>Product Description: <span style={{ fontWeight: "bold" }}>{selectedProduct.productDescription}</span></p>
-                                                <p>Product Price: <span style={{ fontWeight: "bold" }}>{selectedProduct.prdouctPrice}</span></p>
+                                                <p>Product Price: <span style={{ fontWeight: "bold" }}>{selectedProduct.productPrice}</span></p>
                                                 {/* Add other product details as needed */}
                                             </>
                                         )}
@@ -441,10 +441,10 @@ const Product = () => {
                             </div>
 
                             {filteredProducts.map((product, index) => {
-                                const { prdouctPrice, productDescription, productBrand, category } = product
+                                const { productPrice, productDescription, productBrand, category } = product
                                 const imageUrlsByCategory = getImageUrlByCategory(category);
                                 // Calculate the saved amount
-                                const savedAmount = Math.round((prdouctPrice * product.discount) / 100);
+                                const savedAmount = Math.round((productPrice * product.discount) / 100);
 
                                 return (
                                     <div>
@@ -488,7 +488,7 @@ const Product = () => {
                                                                     <span className="oldprice">
                                                                         <span className="mrp">
                                                                             <span>MRP :  </span>
-                                                                            ₹{product.prdouctPrice}
+                                                                            ₹{product.productPrice}
                                                                         </span>
                                                                     </span>
                                                                     <span className="save-value">(Save ₹{savedAmount})</span>

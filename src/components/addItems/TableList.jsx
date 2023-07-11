@@ -53,7 +53,7 @@ const TableList = () => {
                                     <tr key={item.id}>
                                         <td>{item.id}</td>
                                         <td>{item.productName}</td>
-                                        <td>{item.prdouctPrice}</td>
+                                        <td>{item.productPrice}</td>
                                         <td>{item.productDescription}</td>
                                         <td>{item.productBrand}</td>
                                         <td>
