@@ -6,9 +6,9 @@ import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import { Typography } from '@mui/material';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
-
 const ProductDetails = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+
   const location = useLocation();
   const product = location.state.product;
   const usenavigate = useNavigate();
@@ -32,6 +32,54 @@ const ProductDetails = () => {
     setIsModalOpen(false);
   };
 
+  const loadScript = (src) => {
+    return new Promise((resolve) => {
+      const script = document.createElement('script')
+      script.src = src
+      script.onload = () => {
+        resolve(true)
+      }
+      script.onerror = () => {
+        resolve(false)
+      }
+      document.body.appendChild(script)
+    })
+  }
+
+  const handleBuyNow = async (amount) => {
+    const res = await loadScript('https://checkout.razorpay.com/v1/checkout.js')
+    if (!res) {
+      alert("Error loading razor pay script")
+      return
+    }
+    const options = {
+      key: "rzp_test_dbRuomaxLTemXU",
+      currency: "INR",
+      amount: priceAfterDiscount * 100,
+      name: product.productName,
+      order_id: res.id,
+      description: product.productDescription,
+
+      handler: function (response) {
+        alert(response.razorpay_payment_id)
+        alert("Payment Successfully")
+      },
+      prefill: {
+        email: 'Anjal.gupta28@gmail.com',
+        contact: '8770495994',
+        name:'Anjal'
+      },
+      notes: {
+        address: 'Thanks for Supporting to us.',
+      },
+      // theme: {
+      //   color: '#F37254',
+      // },
+    }
+    const paymentObject = new window.Razorpay(options)
+    paymentObject.open()
+  }
+
   return (
     <>
       <div className='container'>
@@ -51,9 +99,9 @@ const ProductDetails = () => {
       <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", padding: "10px" }} className='container'>
         <div style={{ width: "70%", height: "1000px", textAlign: "center", padding: "15px" }}>
           <div style={{ width: "100%", height: "600px", border: "1px solid #c8c8c8" }}></div>
-          <div style={{width:"100%", display:"flex", flexFlow:"row", justifyContent:"space-between", marginTop:"12px"}}>
-            <button style={{width:"49%", backgroundColor:"#ff9f00", borderRadius:"3px" }}>ADD TO CART</button>
-            <button style={{width:"49%", backgroundColor:"#fb641b", borderRadius:"3px"}}>BUY NOW</button>
+          <div style={{ width: "100%", display: "flex", flexFlow: "row", justifyContent: "space-between", marginTop: "12px" }}>
+            <button style={{ width: "49%", backgroundColor: "#ff9f00", borderRadius: "3px" }}>ADD TO CART</button>
+            <button style={{ width: "49%", backgroundColor: "#fb641b", borderRadius: "3px" }} onClick={handleBuyNow}>BUY NOW</button>
           </div>
         </div>
 
@@ -65,28 +113,28 @@ const ProductDetails = () => {
             <div style={{ textDecoration: "line-through", marginLeft: "15px", fontSize: "20px", color: "#878787" }}>₹{product.productPrice}</div>
             <div style={{ marginLeft: "12px", fontSize: "16px", fontWeight: "bold", color: "#388e3c", verticalAlign: "middle" }}>{product.discount}% off</div>
             <div style={{ marginLeft: "15px", color: "grey" }}
-               onMouseEnter={handleIconHover}
+              onMouseEnter={handleIconHover}
               onMouseLeave={handleIconLeave}
             >
               <ErrorOutlineIcon />
               {isModalOpen && (
                 <div style={{ position: "absolute", padding: "15px", borderRadius: "4px", boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)", backgroundColor: "whitesmoke", width: "auto" }}>
-                  <div style={{fontSize: "14px", fontWeight: "bold", color: "black",}}>
+                  <div style={{ fontSize: "14px", fontWeight: "bold", color: "black", }}>
                     Price Details
                   </div>
                   <div style={{ marginTop: "15px", color: "grey", display: "flex" }}>
-                    <div style={{fontWeight:"bold"}}>Maximum Retail Price</div>
+                    <div style={{ fontWeight: "bold" }}>Maximum Retail Price</div>
                     <div style={{ textDecoration: "line-through", marginLeft: "70px", color: "black" }}>₹ {product.productPrice}.00</div>
                   </div>
-                  <div style={{fontSize:"12px", fontWeight:"bold"}}>(Incl. of all taxes)</div>
-                  <div style={{backgroundColor:"grey", height:"1px", width:"100%", marginTop:"15px"}}/>
+                  <div style={{ fontSize: "12px", fontWeight: "bold" }}>(Incl. of all taxes)</div>
+                  <div style={{ backgroundColor: "grey", height: "1px", width: "100%", marginTop: "15px" }} />
                   <div style={{ marginTop: "15px", color: "grey", display: "flex" }}>
-                    <div style={{fontWeight:"bold"}}>Selling Price</div>
+                    <div style={{ fontWeight: "bold" }}>Selling Price</div>
                     <div style={{ marginLeft: "150px", color: "black" }}>₹ {priceAfterDiscount}.00</div>
                   </div>
-                  <div style={{backgroundColor:"grey", height:"1px", width:"100%", marginTop:"15px"}}/>
+                  <div style={{ backgroundColor: "grey", height: "1px", width: "100%", marginTop: "15px" }} />
 
-                  <div style={{marginTop:"15px", color:"#388e3c", fontWeight:"bold", fontSize:"14px", textAlign:"center" }}>Overall you save ₹{amountSaved} ({product.discount}%) on this product</div>
+                  <div style={{ marginTop: "15px", color: "#388e3c", fontWeight: "bold", fontSize: "14px", textAlign: "center" }}>Overall you save ₹{amountSaved} ({product.discount}%) on this product</div>
                 </div>
               )}
             </div>

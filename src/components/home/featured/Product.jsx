@@ -112,7 +112,7 @@ const Product = () => {
                     console.error('Error fetching product data:', error);
                 });
         }
-    }, []);
+    }, [usenavigate]);
 
     const convertToImageUrl = (imageData) => {
         if (!imageData) return <div>Loading image...</div>;
@@ -479,7 +479,7 @@ const Product = () => {
                                                                     </div>
                                                                     <div className="inc-tax">(Incl. all Taxes)</div>
                                                                     <div>
-                                                                        <button className="buy-now-button">Buy Now</button>
+                                                                        {/* <button className="buy-now-button">Buy Now</button> */}
                                                                         <button className="add-to-cart-button" onClick={(event) => handleAddToCartClick(event, product, index)}>Add to Cart</button>
                                                                     </div>
                                                                 </div>

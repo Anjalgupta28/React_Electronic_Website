@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react"
-import { list } from "../../data/Data"
 
 const RecentCard = () => {
   const [data, setData] = useState([]);
@@ -26,7 +25,7 @@ const RecentCard = () => {
     <>
       <div className='content grid3 mtop'>
         {data.map((val, index) => {
-          const {imageBase64String, productName, productPrice, productDescription, productBrand, category } = val
+          const {imageBase64String, productPrice, productDescription, productBrand, category } = val
           const imageUrl = convertImage(imageBase64String);
           return (
             <div className='box shadow' key={index}>
