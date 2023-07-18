@@ -5,6 +5,7 @@ import MenuItem from '@mui/material/MenuItem';
 import TuneIcon from '@mui/icons-material/Tune';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import RemoveShoppingCartIcon from '@mui/icons-material/RemoveShoppingCart';
+import BoltIcon from '@mui/icons-material/Bolt';
 import Badge from '@mui/material/Badge';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { Box, Breadcrumbs, Modal, Typography, Link } from '@mui/material';
@@ -68,7 +69,7 @@ const Product = () => {
             usenavigate("/");
         } else {
             // Fetch the product data from the JSON server
-            fetch('http://localhost:8000/addItems')
+            fetch('http://localhost:7000/addItems')
                 .then(response => response.json())
                 .then(data => {
                     setProducts(data);
@@ -99,7 +100,7 @@ const Product = () => {
                             const urls = [];
                             for (let i = 0; i < data.length; i++) {
                                 const product = data[i];
-                                const response = await fetch(`http://localhost:8000/addItems/${product.id}`);
+                                const response = await fetch(`http://localhost:7000/addItems/${product.id}`);
                                 const imageData = await response.json();
                                 urls.push(imageData.imageBase64String);
                             }
@@ -203,22 +204,21 @@ const Product = () => {
     const handleAddToCartClick = (event, product, index) => {
         event.stopPropagation();
         const itemIndex = cart.findIndex((item) => item.id === product.id);
+        let updatedCart;
+
         if (itemIndex !== -1) {
             // Product already exists in the cart, increase the quantity
-            const updatedCart = [...cart];
+            updatedCart = [...cart];
             updatedCart[itemIndex].quantity += 1;
-            setCart(updatedCart);
         } else {
             // Product is not in the cart, add it as a new item
-            const updatedCart = [...cart, { ...product, quantity: 1 }];
-            setCart(updatedCart);
+            updatedCart = [...cart, { ...product, quantity: 1 }];
         }
+
+        setCart(updatedCart);
 
         const updatedQuantities = { ...quantities, [product.id]: (quantities[product.id] || 0) + 1 };
         setQuantities(updatedQuantities);
-
-        const updatedTotalSum = calculateTotalSum(updatedQuantities);
-        setTotalSum(updatedTotalSum);
 
         setSelectedProduct(product);
         setShowModal(true);
@@ -226,6 +226,19 @@ const Product = () => {
         const updatedPricesAfterDiscount = [...pricesAfterDiscount]; // Create a new array
         updatedPricesAfterDiscount[index] = calculatePriceAfterDiscount(product);
         setPricesAfterDiscount(updatedPricesAfterDiscount);
+
+        // Calculate and update the subtotal
+        calculateSubtotal(updatedCart, updatedQuantities);
+    };
+
+    const calculateSubtotal = (cart, quantities) => {
+        let subtotal = 0;
+        cart.forEach((item) => {
+            const quantity = quantities[item.id] || 0;
+            const price = pricesAfterDiscount[cart.indexOf(item)];
+            subtotal += price * quantity;
+        });
+        setTotalSum(subtotal);
     };
 
     const handleAddToWishlistClick = (event, product) => {
@@ -249,13 +262,63 @@ const Product = () => {
     const handleClearCartClick = () => {
         setCart([]); // Clear the cart by setting it to an empty array
         setTotalSum(0); // Reset the total sum
+        setQuantities({});
+        calculateSubtotal([], {});
     };
+
+    const loadScript = (src) => {
+        return new Promise((resolve) => {
+            const script = document.createElement('script')
+            script.src = src
+            script.onload = () => {
+                resolve(true)
+            }
+            script.onerror = () => {
+                resolve(false)
+            }
+            document.body.appendChild(script)
+        })
+    }
+
+    const handleBuyNow = async (amount) => {
+        const res = await loadScript('https://checkout.razorpay.com/v1/checkout.js')
+        if (!res) {
+            alert("Error loading razor pay script")
+            return
+        }
+        const options = {
+            key: "rzp_test_dbRuomaxLTemXU",
+            currency: "INR",
+            amount: totalSum * 100,
+            name: selectedProduct.productName,
+            order_id: res.id,
+            description: selectedProduct.productDescription,
+
+            handler: function (response) {
+                alert(response.razorpay_payment_id)
+                alert("Payment Successfully")
+            },
+            prefill: {
+                email: 'Anjal.gupta28@gmail.com',
+                contact: '8770495994',
+                name: 'Anjal'
+            },
+            notes: {
+                address: 'Thanks for Supporting to us.',
+            },
+            // theme: {
+            //   color: '#F37254',
+            // },
+        }
+        const paymentObject = new window.Razorpay(options)
+        paymentObject.open()
+    }
 
     return (
         <>
             <section className='featured background'>
                 <div className='container'>
-                    <Breadcrumbs separator={<NavigateNextIcon fontSize="small"/>} aria-label="breadcrumb">
+                    <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
                         <Link color="inherit" href="/home">
                             Home
                         </Link>
@@ -379,6 +442,11 @@ const Product = () => {
                                             onClick={handleClearCartClick}>
                                             <RemoveShoppingCartIcon />Clear Cart
                                         </Button>
+                                        <Button
+                                            style={{ border: "1px solid black", color: "black", marginRight: "5px" }}
+                                            onClick={handleBuyNow}>
+                                            <BoltIcon />Buy Now
+                                        </Button>
                                     </div>
                                     <div style={{ backgroundColor: "#d7d9d6", width: "20rem", height: "auto", display: "flex", float: "right", marginTop: "1rem", flexDirection: "column" }}>
                                         <div style={{ padding: "15px" }}>Cart Item : <span style={{ fontWeight: "bold", marginLeft: "9.5rem" }}>{cart.length}</span></div>
@@ -492,7 +560,9 @@ const Product = () => {
                                                                         </span>
                                                                     </span>
                                                                     <span className="save-value">(Save ₹{savedAmount})</span>
-                                                                    <span className="off-percentage">{Math.round(product.discount)}% Off</span>
+                                                                    {product.discount > 0 && (
+                                                                        <span className="off-percentage">{Math.round(product.discount)}% Off</span>
+                                                                    )}
                                                                 </div>
                                                                 <div className="brand">Brand : {productBrand}</div>
                                                                 <div className="brand">Category : {category}</div>

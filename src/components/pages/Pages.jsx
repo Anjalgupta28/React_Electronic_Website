@@ -12,6 +12,7 @@ import AddItems from "../addItems/AddItems";
 import CreateInvoice from "../addItems/createInvoice";
 import Product from "../home/featured/Product";
 import ProductDetails from "../home/featured/ProductDetails";
+import StudentList from "../addItems/StudentList";
 
 const Pages = () => {
   return (
@@ -29,6 +30,7 @@ const Pages = () => {
           <Route exact path="/productPage" element={<Product />} />
           <Route exact path="/product-details/:id" element={<ProductDetails />} />
           <Route exact path="/contact" element={<Contact />} />
+          <Route exact path="/studentlist" element={<StudentList />} />
         </Routes>
         <Footer />
       </BrowserRouter>

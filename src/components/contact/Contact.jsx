@@ -27,7 +27,7 @@ const Contact = () => {
     document.getElementById("myForm").reset();
     let ContactObj = { name, subject, email, message };
 
-    fetch("http://localhost:8000/contact", {
+    fetch("http://localhost:7000/contact", {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify(ContactObj),

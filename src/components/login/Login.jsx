@@ -12,7 +12,7 @@ const Login = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-            fetch("http://localhost:8000/users/"+username)
+            fetch("http://localhost:7000/users/"+username)
                 .then((res) => {
                     return res.json()
                 }).then((resp) => {

@@ -5,7 +5,7 @@ const TableList = () => {
     const [data, setData] = useState(null);
 
     useEffect(() => {
-        fetch("http://localhost:8000/addItems")
+        fetch("http://localhost:7000/addItems")
             .then((res) => {
                 return res.json();
             }).then((resp) => {
@@ -17,7 +17,7 @@ const TableList = () => {
 
     const Removefunction = (id) => {
         if (window.confirm('Do you want to remove?')) {
-            fetch(`http://localhost:8000/addItems/${id}`, {
+            fetch(`http://localhost:7000/addItems/${id}`, {
                 method: "DELETE"
             }).then((res) => {
                 alert('Removed successfully.')

@@ -6,7 +6,7 @@ const RecentCard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:8000/addItems");
+        const response = await fetch("http://localhost:7000/addItems");
         const data = await response.json();
         const lastSixData = data.slice(-6);
         setData(lastSixData);
@@ -14,7 +14,6 @@ const RecentCard = () => {
         console.error(error);
       }
     };
-
     fetchData();
   }, []);
 

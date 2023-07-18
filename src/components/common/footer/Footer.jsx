@@ -18,7 +18,7 @@ const Footer = () => {
     // formRef.current.reset();
     let SubscriberObj = { subscriber };
 
-    fetch("http://localhost:8000/subscribers", {
+    fetch("http://localhost:7000/subscribers", {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify(SubscriberObj),

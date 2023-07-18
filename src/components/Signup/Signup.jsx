@@ -19,7 +19,7 @@ const Signup = () => {
         let signupObj = { id, name, password, email, phone, address };
         // console.log(signupObj)
 
-        fetch(" http://localhost:8000/users", {
+        fetch(" http://localhost:7000/users", {
             method: "POST",
             headers: { 'content-type': 'application/json' },
             body: JSON.stringify(signupObj)

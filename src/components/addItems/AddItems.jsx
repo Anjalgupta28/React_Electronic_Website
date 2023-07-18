@@ -12,6 +12,7 @@ import DownloadIcon from '@mui/icons-material/Download';
 import { CircularProgress } from "@mui/material";
 import { useReactToPrint } from "react-to-print";
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import './Additem.css'
 
 const AddItems = () => {
@@ -73,7 +74,7 @@ const AddItems = () => {
 
   const fetchData = () => {
     setIsLoading(true);
-    fetch("http://localhost:8000/addItems")
+    fetch("http://localhost:7000/addItems")
       .then((res) => res.json())
       .then((resp) => {
         setData(resp);
@@ -93,7 +94,7 @@ const AddItems = () => {
 
   const removeItem = (id) => {
     if (window.confirm("Do you want to remove?")) {
-      fetch(`http://localhost:8000/addItems/${id}`, {
+      fetch(`http://localhost:7000/addItems/${id}`, {
         method: "DELETE",
       })
         .then((res) => {
@@ -118,7 +119,7 @@ const AddItems = () => {
 
   const handleUpdateItem = (e) => {
     e.preventDefault();
-    fetch(`http://localhost:8000/addItems/${editItemId}`, {
+    fetch(`http://localhost:7000/addItems/${editItemId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -236,7 +237,7 @@ const AddItems = () => {
         };
       }
 
-      fetch("http://localhost:8000/addItems", {
+      fetch("http://localhost:7000/addItems", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -302,6 +303,10 @@ const AddItems = () => {
   const createInvoice = () => {
     usenavigate("/createInvoice");
   };
+
+  const studentPage =() =>{
+    usenavigate("/studentlist")
+  }
 
   const renderFormInputs = () => {
     if (category === "Electronics") {
@@ -406,7 +411,8 @@ const AddItems = () => {
         <div className='container recent' style={{ display: "flex", justifyContent: "flex-end" }}>
           <button style={{ marginTop: "1rem", marginRight: "1rem" }} onClick={createInvoice}>Create Invoice</button>
           <button style={{ marginTop: "1rem", marginRight: "1rem" }} onClick={handleClickOpen}>Add Product</button>
-          <button style={{ marginTop: "1rem" }} onClick={generatePDF}>Download PDF<DownloadIcon /></button>
+          <button style={{ marginTop: "1rem", marginRight: "1rem" }} onClick={generatePDF}>Download PDF<DownloadIcon /></button>
+          <button style={{ marginTop: "1rem" }} onClick={studentPage}>Student List<FormatListBulletedIcon style={{marginLeft:"10px"}}/></button>
         </div>
       </section>
       {isLoading ? (

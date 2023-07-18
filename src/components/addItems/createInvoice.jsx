@@ -44,7 +44,7 @@ const CreateInvoice = () => {
   }, [usenavigate]);
 
   useEffect(() => {
-    fetch("http://localhost:8000/invoice")
+    fetch("http://localhost:7000/invoice")
       .then((response) => response.json())
       .then((data) => {
         setInvoiceData(data);
@@ -97,7 +97,7 @@ const CreateInvoice = () => {
       grandTotal,
     };
     setInvoiceData([...invoiceData, InvoiceObj]);
-    fetch("http://localhost:8000/invoice", {
+    fetch("http://localhost:7000/invoice", {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify(InvoiceObj),
