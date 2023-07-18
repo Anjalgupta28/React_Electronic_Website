@@ -8,6 +8,7 @@ import StudentDataService from '../services/student.services';
 import { messaging } from '../../firebase';
 import { getToken } from 'firebase/messaging';
 import { toast } from 'react-toastify';
+import axios from 'axios';
 
 const StudentList = () => {
     const [openModal, setOpenModal] = useState(false);
@@ -27,11 +28,11 @@ const StudentList = () => {
         if (!isLoggedIn) {
             usenavigate("/");
         }
-        
+
         fetchStudents();
         getStudent();
         requestPermission()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [usenavigate]);
 
     const fetchStudents = async () => {
@@ -89,7 +90,7 @@ const StudentList = () => {
 
     const sendTokenToServer = async (token) => {
         try {
-             await fetch('http://localhost:8000/token', {
+            await fetch('http://localhost:8000/token', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -104,14 +105,23 @@ const StudentList = () => {
 
     const deleteHandler = async (id) => {
         try {
-            const confirmed = window.confirm("Do you want to delete this record?");
-            if (confirmed) {
-                // Delete student
-                await StudentDataService.deleteStudent(id);
-                setMessage({ error: false, msg: 'Record deleted successfully!' });
-                await sendPushNotification(); // Send push notification
-                getStudent();
+            const confirmed = await fetch((`/data/${id}`), { method: 'GET' })
+            console.log("confirmed", confirmed)
+            if (confirmed.ok) {
+                // await StudentDataService.deleteStudent(id);
+                const response = await axios.delete(`http://localhost:8000/delete/${id}`, { headers: { 'Content-Type': 'application/json' } });
+                // const data = await response.json();
+                console.log("response", response)
+                // alert("Record deleted successfully!");
+            } else {
+                // Show error alert if the record deletion fails
+                alert(`Failed to delete record: `);
             }
+
+            // await StudentDataService.deleteStudent(id);
+            // setMessage({ error: false, msg: 'Record deleted successfully!' });
+            // await sendPushNotification(); // Send push notification
+            getStudent();
         } catch (error) {
             console.error(error);
         }
@@ -120,35 +130,35 @@ const StudentList = () => {
     const sendPushNotification = async () => {
         const title = "Record Deleted";
         const body = "A record has been deleted from the student list.";
-      
+
         const notification = {
-          title,
-          body,
+            title,
+            body,
         };
-      
+
         try {
-          const response = await fetch("http://localhost:8000/send-notification", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ notification }),
-          });
-          if (response.ok) {
-            toast.success("Push notification sent successfully!", {
-              position: toast.POSITION.BOTTOM_RIGHT,
+            const response = await fetch("http://localhost:8000/send-notification", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ notification }),
             });
-          } else {
-            throw new Error("Failed to send push notification");
-          }
+            if (response.ok) {
+                toast.success("Push notification sent successfully!", {
+                    position: toast.POSITION.BOTTOM_RIGHT,
+                });
+            } else {
+                throw new Error("Failed to send push notification");
+            }
         } catch (error) {
-          console.error("Error sending push notification:", error);
-          toast.error("Failed to send push notification.", {
-            position: toast.POSITION.BOTTOM_RIGHT,
-          });
+            console.error("Error sending push notification:", error);
+            toast.error("Failed to send push notification.", {
+                position: toast.POSITION.BOTTOM_RIGHT,
+            });
         }
-      };
-      
+    };
+
     const handleModalOpen = () => {
         setOpenModal(true);
     };
