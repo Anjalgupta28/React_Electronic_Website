@@ -4,7 +4,7 @@ importScripts(
 );
 
 const firebaseConfig = {
-    apiKey: "AIzaSyDg7OqGs5LpKSTM6B7FtYjAwcCRQdJ-9kw",
+  apiKey: "AIzaSyDg7OqGs5LpKSTM6B7FtYjAwcCRQdJ-9kw",
   authDomain: "student-crud-apps.firebaseapp.com",
   projectId: "student-crud-apps",
   storageBucket: "student-crud-apps.appspot.com",
@@ -14,6 +14,7 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
+
 const messaging = firebase.messaging();
 
 messaging.onBackgroundMessage((payload) => {
