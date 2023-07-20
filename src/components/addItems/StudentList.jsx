@@ -11,6 +11,7 @@
     import { onMessage } from 'firebase/messaging';
 
     const StudentList = () => {
+
         const [openModal, setOpenModal] = useState(false);
         const [students, setStudents] = useState([]);
         const [studentName, setStudentName] = useState('');
@@ -34,7 +35,18 @@
             // requestPermission()
         }, [usenavigate]);
 
-        onMessage(messaging,(payload) =>{
+        onMessage(messaging,async(payload) =>{
+            const sw = await window.navigator.serviceWorker.register('/firebase-messaging-sw.js');
+            window.Notification.requestPermission((permission)=>{
+                console.log("inside");
+                if (permission === 'granted') {
+                    const image = payload.data['gcm.notification.Image'];
+                    sw.showNotification(payload.notification.title,{
+                        body:payload.notification.body,
+                        icon: image,
+                    })
+                }
+            })
             console.log('on message payload',payload);
         })
 
@@ -108,46 +120,23 @@
             }
         };
 
-        // const deleteHandler = async (id) => {
-        //     try {
-        //         const confirmed = await axios.get(`http://localhost:8000/data/${id}`)
-        //         console.log("confirmed", confirmed)
-        //         if (confirmed.status === 200 ) {
-        //             // await StudentDataService.deleteStudent(id);
-        //             const response = await axios.delete(`http://localhost:8000/delete/${id}`);
-        //             // const data = await response.json();
-        //             console.log("response", response)
-        //             alert("Record deleted successfully!");
-        //         } else {
-        //             // Show error alert if the record deletion fails
-        //             alert(`Failed to delete record: `);
-        //         }
-
-        //         // await StudentDataService.deleteStudent(id);
-        //         // setMessage({ error: false, msg: 'Record deleted successfully!' });
-        //         // await sendPushNotification(); // Send push notification
-        //         getStudent();
-        //     } catch (error) {
-        //         console.error(error);
-        //     }
-        // };
-
         const deleteHandler = async (id) => {
             try {
               const confirmed = await axios.get(`http://localhost:8000/data/${id}`);
               console.log("confirmed", confirmed);
+          
               if (confirmed.status === 200) {
-                const { confirmation_message } = confirmed.data;
-                
-                // Show the confirmation message received from the GET API in an alert
-                if (window.confirm(confirmation_message)) {
+                const confirmation = window.confirm(confirmed.data.confirmation_message);
+                if (confirmation) {
                   const response = await axios.delete(`http://localhost:8000/delete/${id}`);
                   console.log("response", response);
-                  if (response.status === 200) {
-                  } else {
-                    alert("Failed to delete record!");
-                  }
+                  // Show success message or perform any other actions
+                } else {
+                  // Show cancellation message or perform any other actions
                 }
+              } else {
+                // Show error alert if the confirmation request fails
+                alert(`Failed to fetch confirmation: ${confirmed.data.error}`);
               }
               getStudent();
             } catch (error) {
@@ -155,7 +144,38 @@
             }
           };
 
-          
+        // const deleteHandler = async (id) => {
+        //     try {
+        //       const confirmed = await axios.get(`http://localhost:8000/data/${id}`);
+        //       console.log("confirmed", confirmed);
+        //       if (confirmed.status === 200) {
+        //         const { confirmation_message } = confirmed.data;
+                
+        //         // Show the confirmation message received from the GET API in an alert
+        //         if (window.confirm(confirmation_message)) {
+        //           const response = await axios.delete(`http://localhost:8000/delete/${id}`);
+        //           console.log("response", response);
+        //           if (response.status === 200) {
+        //             const notification = {
+        //                 to: "cM13pTIvoB0eykdzTrPVW2:APA91bFf6PntYQRLqBd2RQ-CdUGOZ71W1ePbCbT00IkQ34prVYIl2-6cRV3pt041EJHY6i3VFcEPkmjgyGpu71m1l2FRg6OIj-maUsYPeLmdFGWRpJnlqWGIOtlSnMZuvTfrlMu2avXD", // Use the stored token or fetch it from the server
+        //                 notification: {
+        //                   title: 'Record Deleted Successfully',
+        //                   body: 'The record has been deleted successfully!',
+        //                 //   icon: 'path/to/notification-icon.png',
+        //                 },
+        //               };
+        //               const pushResponse = await axios.post('http://localhost:8000/send-notification', { notification });
+        //               console.log('Push notification sent:', pushResponse.data);
+        //           } else {
+        //             alert("Failed to delete record!");
+        //           }
+        //         }
+        //       }
+        //       getStudent();
+        //     } catch (error) {
+        //       console.error(error);
+        //     }
+        //   };
 
         const handleModalOpen = () => {
             setOpenModal(true);
